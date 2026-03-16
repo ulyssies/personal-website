@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ulyssies Adams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #161616;
+  --surface: #1a1a1a;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #f0ede8;
+  --text2: #8a8680;
+  --text3: #4a4744;
+  --accent: #e8e0d0;
+  --accent2: #c8bfaf;
+  --grit: #2a2520;
+  --sphere-color: rgba(200,191,175,0.6);
+  --sphere-line: rgba(200,191,175,0.15);
+  --name-color: #f0ede8;
+  --tag-bg: rgba(255,255,255,0.05);
+  --tag-border: rgba(255,255,255,0.1);
+  --card-bg: #111111;
+  --card-border: rgba(255,255,255,0.06);
+  --card-hover: rgba(255,255,255,0.04);
+  --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+[data-theme="light"] {
+  --bg: #f5f2ed;
+  --bg2: #ede9e3;
+  --bg3: #e5e0d8;
+  --surface: #ddd8d0;
+  --border: rgba(0,0,0,0.07);
+  --border-hover: rgba(0,0,0,0.15);
+  --text: #1a1714;
+  --text2: #6b6560;
+  --text3: #aaa59e;
+  --accent: #1a1714;
+  --accent2: #3a3530;
+  --grit: #d5cfc5;
+  --sphere-color: rgba(30,25,20,0.55);
+  --sphere-line: rgba(30,25,20,0.12);
+  --name-color: #0a0806;
+  --tag-bg: rgba(0,0,0,0.04);
+  --tag-border: rgba(0,0,0,0.1);
+  --card-bg: #ede9e3;
+  --card-border: rgba(0,0,0,0.06);
+  --card-hover: rgba(0,0,0,0.03);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: var(--noise);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* ── NAV ─────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 60px;
+  background: rgba(10,10,10,0.7);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+[data-theme="light"] nav {
+  background: rgba(245,242,237,0.8);
+}
+
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-logo span { color: var(--text); }
+.nav-logo:hover { color: var(--text); }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--text2);
+  text-decoration: none;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+.theme-toggle {
+  background: var(--tag-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--text2);
+  transition: all 0.3s ease;
+}
+
+[data-theme="light"] .theme-toggle::after {
+  transform: translateX(20px);
+  background: var(--text);
+}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#sphere-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hero-intro {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 300;
+  color: #94a3b8;
+  letter-spacing: 0.2em;
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.5s forwards;
+}
+
+.hero-name {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(52px, 8vw, 96px);
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.7s forwards;
+}
+
+.hero-name .first { display: block; }
+.hero-name .last {
+  display: block;
+  color: #ffffff;
+}
+
+.hero-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 20px;
+  font-weight: 400;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.9s forwards;
+}
+
+.hero-sub .hero-highlight {
+  color: #64748b;
+  transition: color 0.4s ease;
+  animation: heroHighlight1 3s ease-in-out infinite;
+}
+
+.hero-sub .hero-highlight:nth-child(3) {
+  animation-name: heroHighlight2;
+  animation-delay: -1s;
+}
+
+.hero-sub .hero-highlight:nth-child(5) {
+  animation-name: heroHighlight3;
+  animation-delay: -2s;
+}
+
+@keyframes heroHighlight1 {
+  0%, 20% { color: #ffffff; }
+  33.33%, 86.67% { color: #64748b; }
+  100% { color: #ffffff; }
+}
+
+@keyframes heroHighlight2 {
+  0%, 33.33% { color: #64748b; }
+  46.67%, 66.67% { color: #ffffff; }
+  80%, 100% { color: #64748b; }
+}
+
+@keyframes heroHighlight3 {
+  0%, 66.66% { color: #64748b; }
+  80%, 96.67% { color: #ffffff; }
+  100% { color: #64748b; }
+}
+
+.hero-sub .hero-sep {
+  color: #334155;
+  user-select: none;
+}
+
+.hero-scroll {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.4s forwards;
+  z-index: 2;
+}
+
+.hero-scroll span {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text3);
+}
+
+.scroll-line {
+  width: 1px;
+  height: 40px;
+  background: linear-gradient(to bottom, var(--text3), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ── READING PROGRESS BAR ─────────────────────────────────── */
+.reading-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, #a78bfa, #818cf8);
+  width: 0%;
+  transition: width 0.1s ease;
+}
+
+/* ── SECTIONS ─────────────────────────────────────────────── */
+section {
+  position: relative;
+  z-index: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 120px 48px;
+}
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 48px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 80px;
+}
+
+/* ── ABOUT ─────────────────────────────────────────────────── */
+#about .about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.about-headline {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+.about-headline em {
+  font-style: normal;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--text2);
+}
+
+.about-body {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.8;
+  font-weight: 300;
+}
+
+.about-body p + p { margin-top: 16px; }
+
+.stack-list {
+  margin-top: 36px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 6px 12px;
+  background: var(--tag-bg);
+  border: 1px solid var(--tag-border);
+  border-radius: 4px;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+  transition: all 0.2s;
+}
+.tag:hover {
+  background: var(--border);
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
+/* ── HOBBIES ─────────────────────────────────────────────── */
+#hobbies .hobbies-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.hobby-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 28px;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+.hobby-card:hover {
+  transform: translateY(-4px);
+  border-color: #a78bfa;
+  box-shadow: 0 8px 24px rgba(167, 139, 250, 0.25), 0 0 0 1px rgba(167, 139, 250, 0.15);
+}
+
+[data-theme="light"] .hobby-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+[data-theme="light"] .hobby-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.1);
+}
+
+.hobby-card .hobby-emoji {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.hobby-card .hobby-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.hobby-card .hobby-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ── WHAT I'M INTO RIGHT NOW ───────────────────────────────── */
+#into-now .into-now-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+#into-now .into-now-panel {
+  height: 460px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 20px;
+}
+
+#into-now .into-now-panel-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+  display: block;
+  flex-shrink: 0;
+}
+
+#into-now .into-now-embed-wrap {
+  flex: 1;
+  min-height: 0;
+}
+
+#into-now .spotify-embed {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+}
+
+#into-now .letterboxd-card {
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+#into-now .letterboxd-card:hover {
+  border-color: #a78bfa;
+  box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.15), 0 8px 24px rgba(167, 139, 250, 0.2);
+}
+
+#into-now .letterboxd-card .letterboxd-emoji {
+  font-size: 28px;
+  line-height: 1;
+  margin-bottom: 12px;
+  display: block;
+}
+
+#into-now .letterboxd-card .letterboxd-username {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+#into-now .letterboxd-card .letterboxd-tagline {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.5;
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+
+#into-now .letterboxd-card .letterboxd-flavor {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+#into-now .letterboxd-card .letterboxd-divider {
+  height: 0;
+  border: none;
+  border-top: 1px solid var(--card-border);
+  margin: 0 0 16px 0;
+}
+
+#into-now .letterboxd-card .letterboxd-btn {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: #a78bfa;
+  background: transparent;
+  border: 1px solid #a78bfa;
+  border-radius: 6px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+#into-now .letterboxd-card:hover .letterboxd-btn {
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+}
+
+/* ── PROJECTS ─────────────────────────────────────────────── */
+.projects-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+.project-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.project-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-hover);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.project-card:hover::before { opacity: 1; }
+.project-card:hover { border-color: var(--border-hover); }
+
+.project-card:first-child {
+  grid-column: span 2;
+  border-radius: 12px 12px 0 0;
+}
+.project-card:nth-child(2) { border-radius: 0 0 0 12px; }
+.project-card:nth-child(3) { border-radius: 0 0 12px 0; }
+
+.project-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.1em;
+  margin-bottom: 24px;
+}
+
+.project-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  line-height: 1.2;
+}
+
+.project-card:first-child .project-title {
+  font-size: 36px;
+}
+
+.project-desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  font-weight: 300;
+  max-width: 560px;
+}
+
+.project-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 24px;
+}
+
+.project-arrow {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  font-size: 20px;
+  color: var(--text3);
+  transition: all 0.3s;
+}
+
+.project-card:hover .project-arrow {
+  color: var(--text);
+  transform: translate(3px, -3px);
+}
+
+.project-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ── CONTACT ─────────────────────────────────────────────── */
+#contact {
+  padding-bottom: 160px;
+}
+
+.contact-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 80px;
+  align-items: center;
+}
+
+.contact-headline {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(36px, 5vw, 64px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+
+.contact-headline .outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text3);
+}
+
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+  color: var(--text2);
+  font-size: 15px;
+  transition: all 0.2s;
+  group: true;
+}
+
+.contact-link:first-child { border-top: 1px solid var(--border); }
+
+.contact-link:hover {
+  color: var(--text);
+  padding-left: 8px;
+}
+
+.contact-link span:first-child {
+  font-family: 'Syne', sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.contact-link-arrow {
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+.contact-link:hover .contact-link-arrow {
+  transform: translate(4px, -4px);
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 100%;
+}
+
+.footer-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.05em;
+}
+
+/* ── DIVIDER ─────────────────────────────────────────────── */
+.section-divider {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 48px;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── ANIMATIONS ─────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; transform: scaleY(1); }
+  50% { opacity: 1; transform: scaleY(1.2); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.7); }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  nav { padding: 0 24px; }
+  .nav-links { display: none; }
+  section { padding: 80px 24px; }
+  #about .about-grid { grid-template-columns: 1fr; gap: 48px; }
+  #hobbies .hobbies-grid { grid-template-columns: 1fr; }
+  #into-now .into-now-grid { grid-template-columns: 1fr; }
+  .projects-grid { grid-template-columns: 1fr; }
+  .project-card:first-child { grid-column: span 1; border-radius: 12px 12px 0 0; }
+  .project-card:nth-child(2) { border-radius: 0; }
+  .project-card:nth-child(3) { border-radius: 0 0 12px 12px; }
+  .contact-block { grid-template-columns: 1fr; gap: 48px; }
+  footer { flex-direction: column; gap: 12px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">ua<span>.</span>dev</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#hobbies">Hobbies</a></li>
+    <li><a href="#projects">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="sphere-canvas"></canvas>
+  <div class="hero-content">
+    <p class="hero-intro">Hi, I'm</p>
+    <h1 class="hero-name">
+      <span class="first">Ulyssies</span>
+      <span class="last">Adams</span>
+    </h1>
+    <p class="hero-sub">
+      <span class="hero-highlight">Software Engineer</span><span class="hero-sep">  ·  </span><span class="hero-highlight">AI Builder</span><span class="hero-sep">  ·  </span><span class="hero-highlight">Atlanta, GA</span>
+    </p>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<div class="section-divider"></div>
+<section id="about">
+  <p class="section-label reveal">00 — About</p>
+  <div class="about-grid">
+    <div class="reveal">
+      <h2 class="about-headline">
+        CS grad.<br>
+        <em>Data & AI</em><br>
+        builder.
+      </h2>
+      <div class="stack-list">
+        <span class="tag">Python</span>
+        <span class="tag">SQL</span>
+        <span class="tag">TypeScript</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">React</span>
+        <span class="tag">Next.js</span>
+        <span class="tag">OpenAI API</span>
+        <span class="tag">Streamlit</span>
+        <span class="tag">pandas</span>
+        <span class="tag">Git</span>
+      </div>
+    </div>
+    <div class="about-body reveal" style="transition-delay:0.15s">
+      <p>Computer Science graduate (Georgia State, B.S. Cum Laude, Software Engineering) with hands-on experience in data pipelines, API integrations, and relational databases. I build data-driven applications and AI-powered tools that solve real problems.</p>
+      <p>Data Operations Specialist at Shiplify — validating geospatial and customer data, sustaining 99.5% geolocation accuracy, and improving workflow reliability. Previously an AI Evaluator at OutlierAI, rating LLM outputs for alignment and authoring gold-standard responses for RLHF pipelines.</p>
+      <p>Skilled in Python, SQL, and Java; comfortable across the full stack. I ship products that matter and am always building.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOBBIES -->
+<div class="section-divider"></div>
+<section id="hobbies">
+  <p class="section-label reveal">01 — Outside the Code</p>
+  <div class="hobbies-grid reveal">
+    <div class="hobby-card">
+      <span class="hobby-emoji" aria-hidden="true">⚽</span>
+      <h3 class="hobby-title">Soccer</h3>
+      <p class="hobby-desc">Nothing beats the feeling of a good match. Whether playing or watching, soccer has been a constant in my life.</p>
+    </div>
+    <div class="hobby-card">
+      <span class="hobby-emoji" aria-hidden="true">🎵</span>
+      <h3 class="hobby-title">Music</h3>
+      <p class="hobby-desc">Always have something playing. Music shapes my mood, fuels my focus, and makes everything better.</p>
+    </div>
+    <div class="hobby-card">
+      <span class="hobby-emoji" aria-hidden="true">🎬</span>
+      <h3 class="hobby-title">Movies</h3>
+      <p class="hobby-desc">A good film is hard to beat. I appreciate everything from indie dramas to big blockbusters.</p>
+    </div>
+    <div class="hobby-card">
+      <span class="hobby-emoji" aria-hidden="true">🧗</span>
+      <h3 class="hobby-title">Rock Climbing</h3>
+      <p class="hobby-desc">There is something addictive about problem solving on the wall. Every route is a new challenge.</p>
+    </div>
+    <div class="hobby-card">
+      <span class="hobby-emoji" aria-hidden="true">🥾</span>
+      <h3 class="hobby-title">Hiking</h3>
+      <p class="hobby-desc">I try to get outside as much as possible, usually with my dog Charlie. He loves the trails more than I do.</p>
+    </div>
+    <div class="hobby-card">
+      <span class="hobby-emoji" aria-hidden="true">✈️</span>
+      <h3 class="hobby-title">Travel</h3>
+      <p class="hobby-desc">Exploring new places and experiencing different cultures is one of my favorite ways to recharge.</p>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT I'M INTO RIGHT NOW -->
+<div class="section-divider"></div>
+<section id="into-now">
+  <p class="section-label reveal">02 — What I'm Into Right Now</p>
+  <div class="into-now-grid reveal">
+    <div class="into-now-panel">
+      <span class="into-now-panel-label">Music I've Been Listening To 🎵</span>
+      <div class="into-now-embed-wrap">
+        <iframe class="spotify-embed" src="https://open.spotify.com/embed/playlist/0qNaFme7qi634unjvdkKkC" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist"></iframe>
+      </div>
+    </div>
+    <div class="into-now-panel">
+      <span class="into-now-panel-label">Add Me on Letterboxd 🎬</span>
+      <a href="https://letterboxd.com/ulyssies/" class="letterboxd-card" target="_blank" rel="noopener noreferrer">
+        <span class="letterboxd-emoji" aria-hidden="true">🎬</span>
+        <div class="letterboxd-username">ulyssies</div>
+        <p class="letterboxd-tagline">Follow along with what I'm watching</p>
+        <p class="letterboxd-flavor">Recently watched • Rated • Reviewed</p>
+        <hr class="letterboxd-divider">
+        <span class="letterboxd-btn">View Profile →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<div class="section-divider"></div>
+<section id="projects">
+  <p class="section-label reveal">03 — Work</p>
+  <div class="projects-grid reveal">
+
+    <!-- Featured -->
+    <a class="project-card" href="#" target="_blank">
+      <div class="project-status">
+        <span class="status-dot"></span>
+        Live · In development
+      </div>
+      <p class="project-num">001</p>
+      <h3 class="project-title">AI News Podcast Generator</h3>
+      <p class="project-desc">Full-stack app that generates short AI-powered news podcasts: retrieves current articles from Google News RSS or NewsAPI, transforms them into structured scripts with the OpenAI API, and produces audio via OpenAI text-to-speech. Modular FastAPI + httpx backend for article retrieval and AI processing; Next.js/React frontend for topic selection and playback. Built for the morning commute.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">FastAPI</span>
+        <span class="tag">OpenAI API</span>
+        <span class="tag">Next.js</span>
+        <span class="tag">React</span>
+        <span class="tag">TypeScript</span>
+      </div>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <!-- Job Match Agent -->
+    <a class="project-card" href="https://ulyssies.github.io/job-agent" target="_blank" rel="noopener noreferrer">
+      <div class="project-status">
+        <span class="status-dot"></span>
+        Live
+      </div>
+      <p class="project-num">002</p>
+      <h3 class="project-title">Job Match Agent</h3>
+      <p class="project-desc">Autonomous AI agent that searches multiple job boards daily across 6 target cities, scores each listing 0–100% against my resume using Claude AI, and estimates salaries when none are listed. Cross-run deduplication, persistent 30-day run history, live dark-mode dashboard, and automated daily email delivery.</p>
+      <div class="project-tags">
+        <span class="tag">Node.js</span>
+        <span class="tag">Claude AI</span>
+        <span class="tag">Adzuna API</span>
+        <span class="tag">Nodemailer</span>
+      </div>
+      <span class="project-arrow">↗</span>
+    </a>
+
+    <!-- Spotify Data Pipeline -->
+    <a class="project-card" href="#" target="_blank">
+      <p class="project-num">003</p>
+      <h3 class="project-title">Spotify Data Pipeline Platform</h3>
+      <p class="project-desc">Python-based ETL pipeline that extracts and transforms Spotify API data for structured storage and longitudinal analysis of listening behavior. Normalized metadata modeled and persisted in SQLite; Streamlit app with interactive visual components for exploring the data.</p>
+      <div class="project-tags">
+        <span class="tag">Python</span>
+        <span class="tag">SQLite</span>
+        <span class="tag">Spotipy</span>
+        <span class="tag">pandas</span>
+        <span class="tag">Streamlit</span>
+      </div>
+      <span class="project-arrow">↗</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="section-divider"></div>
+<section id="contact">
+  <p class="section-label reveal">04 — Contact</p>
+  <div class="contact-block">
+    <div class="reveal">
+      <h2 class="contact-headline">
+        Let's<br>
+        <span class="outline">build</span><br>
+        something.
+      </h2>
+    </div>
+    <div class="contact-links reveal" style="transition-delay:0.1s">
+      <a href="mailto:ulyssiesadams@gmail.com" class="contact-link">
+        <span>Email</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+      <a href="https://github.com/ulyssies" target="_blank" class="contact-link">
+        <span>GitHub</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+      <a href="https://linkedin.com/in/ulyssiesadams" target="_blank" class="contact-link">
+        <span>LinkedIn</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+      <a href="#" class="contact-link">
+        <span>Resume</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-text">© 2026 Ulyssies Adams</span>
+  <span class="footer-text">Built from scratch · Fayetteville, GA</span>
+</footer>
+
+<script>
+// ── THEME TOGGLE ──────────────────────────────────────────
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+toggle.addEventListener('click', () => {
+  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
+  initSphere();
+});
+
+// ── SPHERE ────────────────────────────────────────────────
+const canvas = document.getElementById('sphere-canvas');
+const ctx = canvas.getContext('2d');
+
+let W, H, cx, cy, animId;
+let particles = [];
+let connections = [];
+let mouseX = 0, mouseY = 0;
+let time = 0;
+
+const CHAR_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>{}[]|/\\+=-_~;:.,?!@#$%^&*()'.split('');
+const N_PARTICLES = 240;
+const RADIUS = 260;
+
+function resize() {
+  W = canvas.width = canvas.offsetWidth;
+  H = canvas.height = canvas.offsetHeight;
+  cx = W / 2;
+  cy = H / 2;
+}
+
+function isDark() {
+  return document.documentElement.dataset.theme !== 'light';
+}
+
+function sphereColor(alpha) {
+  return isDark()
+    ? `rgba(200,191,175,${alpha})`
+    : `rgba(30,25,20,${alpha})`;
+}
+
+function initSphere() {
+  particles = [];
+  const phi = Math.PI * (3 - Math.sqrt(5));
+  for (let i = 0; i < N_PARTICLES; i++) {
+    const y = 1 - (i / (N_PARTICLES - 1)) * 2;
+    const r = Math.sqrt(1 - y * y);
+    const theta = phi * i;
+    particles.push({
+      ox: Math.cos(theta) * r,
+      oy: y,
+      oz: Math.sin(theta) * r,
+      char: CHAR_SET[Math.floor(Math.random() * CHAR_SET.length)],
+      charTimer: Math.random() * 30,
+      charInterval: 6 + Math.floor(Math.random() * 35),
+      opacity: 0.55 + Math.random() * 0.45,
+    });
+  }
+}
+
+function project(x, y, z, rotX, rotY) {
+  // rotY
+  const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+  const x1 = x * cosY + z * sinY;
+  const z1 = -x * sinY + z * cosY;
+  // rotX
+  const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+  const y2 = y * cosX - z1 * sinX;
+  const z2 = y * sinX + z1 * cosX;
+
+  const fov = 900;
+  const scale = fov / (fov + z2 * RADIUS);
+  return {
+    sx: cx + x1 * RADIUS * scale,
+    sy: cy + y2 * RADIUS * scale,
+    z: z2,
+    scale,
+  };
+}
+
+function drawSphere() {
+  time += 0.004;
+  const rotY = time + mouseX * 0.0008;
+  const rotX = -0.25 + mouseY * 0.0005;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Project all
+  const proj = particles.map(p => ({
+    ...project(p.ox, p.oy, p.oz, rotX, rotY),
+    p,
+  }));
+
+  // Sort by z
+  proj.sort((a, b) => a.z - b.z);
+
+  // Draw connections (closest pairs on front face)
+  const front = proj.filter(p => p.z > -0.2);
+  for (let i = 0; i < front.length; i++) {
+    for (let j = i + 1; j < front.length; j++) {
+      const dx = front[i].sx - front[j].sx;
+      const dy = front[i].sy - front[j].sy;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 70) {
+        const alpha = (1 - dist / 70) * 0.22 * (front[i].z + 1) * 0.5;
+        ctx.beginPath();
+        ctx.moveTo(front[i].sx, front[i].sy);
+        ctx.lineTo(front[j].sx, front[j].sy);
+        ctx.strokeStyle = sphereColor(alpha);
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Draw characters
+  proj.forEach(({ sx, sy, z, scale, p }) => {
+    p.charTimer++;
+    if (p.charTimer >= p.charInterval) {
+      p.char = CHAR_SET[Math.floor(Math.random() * CHAR_SET.length)];
+      p.charTimer = 0;
+    }
+    const depth = (z + 1) * 0.5;
+    const alpha = depth * p.opacity * 0.95;
+    const size = Math.max(10, 14 * scale);
+    ctx.font = `600 ${Math.floor(size)}px 'DM Mono', monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    // Subtle glow so chars pop from background
+    ctx.shadowColor = sphereColor(alpha * 0.8);
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = sphereColor(alpha);
+    ctx.fillText(p.char, sx, sy);
+    ctx.shadowBlur = 0;
+  });
+
+  animId = requestAnimationFrame(drawSphere);
+}
+
+// Mouse parallax
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX - window.innerWidth / 2;
+  mouseY = e.clientY - window.innerHeight / 2;
+});
+
+window.addEventListener('resize', () => {
+  resize();
+});
+
+resize();
+initSphere();
+drawSphere();
+
+// ── READING PROGRESS BAR ───────────────────────────────────
+const readingProgressBar = document.getElementById('reading-progress');
+function updateReadingProgress() {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  readingProgressBar.style.width = scrollPercent + '%';
+}
+window.addEventListener('scroll', updateReadingProgress);
+updateReadingProgress();
+
+// ── SCROLL REVEAL ─────────────────────────────────────────
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
