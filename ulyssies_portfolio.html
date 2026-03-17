@@ -6,6 +6,7 @@
 <title>Ulyssies Adams</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -441,6 +442,15 @@ section {
   font-weight: 300;
 }
 
+i[data-lucide] {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.5;
+  color: #a78bfa;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ── WHAT I'M INTO RIGHT NOW ───────────────────────────────── */
 #into-now .into-now-grid {
   display: grid;
@@ -559,6 +569,83 @@ section {
 #into-now .letterboxd-card:hover .letterboxd-btn {
   background: rgba(167, 139, 250, 0.15);
   color: #c4b5fd;
+}
+
+#into-now .letterboxd-card-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+  justify-content: center;
+}
+
+#into-now .letterboxd-icon-row {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+#into-now .letterboxd-username {
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #f1f5f9;
+  text-align: center;
+}
+
+#into-now .letterboxd-tagline {
+  font-size: 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+#into-now .letterboxd-divider {
+  width: 100%;
+  height: 1px;
+  background: #1e293b;
+  margin: 4px 0 8px 0;
+}
+
+#into-now .letterboxd-genres {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+#into-now .letterboxd-genre-tag {
+  background: #1e293b;
+  color: #94a3b8;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+}
+
+#into-now .letterboxd-rating-stars {
+  font-size: 18px;
+  letter-spacing: 2px;
+  color: #00e054;
+  text-align: center;
+  margin-top: 4px;
+}
+
+#into-now .letterboxd-rating-label {
+  font-size: 11px;
+  color: #64748b;
+  text-align: center;
+}
+
+#into-now .letterboxd-cta-btn {
+  margin-top: 10px;
+  width: 100%;
+  background: transparent;
+  color: #a78bfa;
+  border: 1px solid #a78bfa44;
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 13px;
+  cursor: pointer;
 }
 
 /* ── PROJECTS ─────────────────────────────────────────────── */
@@ -860,6 +947,7 @@ footer {
         <span class="tag">FastAPI</span>
         <span class="tag">React</span>
         <span class="tag">Next.js</span>
+        <span class="tag">HTML/CSS/JS</span>
         <span class="tag">OpenAI API</span>
         <span class="tag">Streamlit</span>
         <span class="tag">pandas</span>
@@ -880,32 +968,32 @@ footer {
   <p class="section-label reveal">01 — Outside the Code</p>
   <div class="hobbies-grid reveal">
     <div class="hobby-card">
-      <span class="hobby-emoji" aria-hidden="true">⚽</span>
+      <span class="hobby-emoji" aria-hidden="true"><i data-lucide="activity"></i></span>
       <h3 class="hobby-title">Soccer</h3>
       <p class="hobby-desc">Nothing beats the feeling of a good match. Whether playing or watching, soccer has been a constant in my life.</p>
     </div>
     <div class="hobby-card">
-      <span class="hobby-emoji" aria-hidden="true">🎵</span>
+      <span class="hobby-emoji" aria-hidden="true"><i data-lucide="music"></i></span>
       <h3 class="hobby-title">Music</h3>
       <p class="hobby-desc">Always have something playing. Music shapes my mood, fuels my focus, and makes everything better.</p>
     </div>
     <div class="hobby-card">
-      <span class="hobby-emoji" aria-hidden="true">🎬</span>
+      <span class="hobby-emoji" aria-hidden="true"><i data-lucide="film"></i></span>
       <h3 class="hobby-title">Movies</h3>
       <p class="hobby-desc">A good film is hard to beat. I appreciate everything from indie dramas to big blockbusters.</p>
     </div>
     <div class="hobby-card">
-      <span class="hobby-emoji" aria-hidden="true">🧗</span>
+      <span class="hobby-emoji" aria-hidden="true"><i data-lucide="mountain"></i></span>
       <h3 class="hobby-title">Rock Climbing</h3>
       <p class="hobby-desc">There is something addictive about problem solving on the wall. Every route is a new challenge.</p>
     </div>
     <div class="hobby-card">
-      <span class="hobby-emoji" aria-hidden="true">🥾</span>
+      <span class="hobby-emoji" aria-hidden="true"><i data-lucide="tree-pine"></i></span>
       <h3 class="hobby-title">Hiking</h3>
       <p class="hobby-desc">I try to get outside as much as possible, usually with my dog Charlie. He loves the trails more than I do.</p>
     </div>
     <div class="hobby-card">
-      <span class="hobby-emoji" aria-hidden="true">✈️</span>
+      <span class="hobby-emoji" aria-hidden="true"><i data-lucide="plane"></i></span>
       <h3 class="hobby-title">Travel</h3>
       <p class="hobby-desc">Exploring new places and experiencing different cultures is one of my favorite ways to recharge.</p>
     </div>
@@ -918,20 +1006,32 @@ footer {
   <p class="section-label reveal">02 — What I'm Into Right Now</p>
   <div class="into-now-grid reveal">
     <div class="into-now-panel">
-      <span class="into-now-panel-label">Music I've Been Listening To 🎵</span>
+      <span class="into-now-panel-label">Music I've Been Listening To <i data-lucide="music"></i></span>
       <div class="into-now-embed-wrap">
         <iframe class="spotify-embed" src="https://open.spotify.com/embed/playlist/0qNaFme7qi634unjvdkKkC" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" title="Spotify playlist"></iframe>
       </div>
     </div>
     <div class="into-now-panel">
-      <span class="into-now-panel-label">Add Me on Letterboxd 🎬</span>
+      <span class="into-now-panel-label">Add Me on Letterboxd <i data-lucide="film"></i></span>
       <a href="https://letterboxd.com/ulyssies/" class="letterboxd-card" target="_blank" rel="noopener noreferrer">
-        <span class="letterboxd-emoji" aria-hidden="true">🎬</span>
-        <div class="letterboxd-username">ulyssies</div>
-        <p class="letterboxd-tagline">Follow along with what I'm watching</p>
-        <p class="letterboxd-flavor">Recently watched • Rated • Reviewed</p>
-        <hr class="letterboxd-divider">
-        <span class="letterboxd-btn">View Profile →</span>
+        <div class="letterboxd-card-inner">
+          <div class="letterboxd-icon-row">
+            <i data-lucide="film" style="width:28px;height:28px;stroke:#a78bfa;stroke-width:1.5"></i>
+          </div>
+          <div class="letterboxd-username">ulyssies</div>
+          <p class="letterboxd-tagline">cinema enthusiast · Atlanta</p>
+          <div class="letterboxd-divider"></div>
+          <div class="letterboxd-genres">
+            <span class="letterboxd-genre-tag">Sci-Fi</span>
+            <span class="letterboxd-genre-tag">Drama</span>
+            <span class="letterboxd-genre-tag">Thriller</span>
+            <span class="letterboxd-genre-tag">Horror</span>
+            <span class="letterboxd-genre-tag">Western</span>
+          </div>
+          <div class="letterboxd-rating-stars">★★★☆☆</div>
+          <div class="letterboxd-rating-label">avg rating</div>
+          <button class="letterboxd-cta-btn" type="button">Check out my profile →</button>
+        </div>
       </a>
     </div>
   </div>
@@ -1024,7 +1124,7 @@ footer {
         <span>LinkedIn</span>
         <span class="contact-link-arrow">↗</span>
       </a>
-      <a href="#" class="contact-link">
+      <a href="attachments/UlyssiesAdams_Resume.pdf" class="contact-link" target="_blank" rel="noopener noreferrer">
         <span>Resume</span>
         <span class="contact-link-arrow">↗</span>
       </a>
@@ -1211,6 +1311,11 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.1 });
 reveals.forEach(el => observer.observe(el));
+</script>
+<script>
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
 </script>
 </body>
 </html>
