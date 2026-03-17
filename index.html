@@ -86,7 +86,7 @@ nav {
   z-index: 100;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 0 48px;
   height: 60px;
   background: rgba(10,10,10,0.7);
@@ -98,18 +98,6 @@ nav {
 [data-theme="light"] nav {
   background: rgba(245,242,237,0.8);
 }
-
-.nav-logo {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--text2);
-  letter-spacing: 0.05em;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-.nav-logo span { color: var(--text); }
-.nav-logo:hover { color: var(--text); }
 
 .nav-links {
   display: flex;
@@ -131,13 +119,16 @@ nav {
 .nav-links a:hover { color: var(--text); }
 
 .theme-toggle {
+  position: absolute;
+  right: 48px;
+  top: 50%;
+  transform: translateY(-50%);
   background: var(--tag-bg);
   border: 1px solid var(--border);
   border-radius: 20px;
   width: 44px;
   height: 24px;
   cursor: pointer;
-  position: relative;
   transition: all 0.3s ease;
   flex-shrink: 0;
 }
@@ -823,6 +814,100 @@ i[data-lucide] {
   transform: translate(4px, -4px);
 }
 
+/* ── RESUME MODAL ───────────────────────────────────────── */
+.resume-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.resume-modal-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+.resume-modal-dialog {
+  position: relative;
+  width: 82vw;
+  height: 88vh;
+  max-width: 100%;
+  max-height: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border-hover);
+  border-radius: 12px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+  transform: scale(0.96);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  overflow: hidden;
+}
+.resume-modal-backdrop.is-open .resume-modal-dialog {
+  transform: scale(1);
+  opacity: 1;
+}
+.resume-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+.resume-modal-close:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--bg2);
+}
+.resume-modal-iframe-wrap {
+  position: absolute;
+  inset: 0;
+  background: #1a1a1a;
+}
+.resume-modal-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+}
+.resume-modal-fallback {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  padding: 10px 16px;
+  background: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.resume-modal-fallback a {
+  color: #a78bfa;
+  font-size: 13px;
+  text-decoration: none;
+}
+.resume-modal-fallback a:hover {
+  text-decoration: underline;
+}
+
 /* ── FOOTER ─────────────────────────────────────────────── */
 footer {
   position: relative;
@@ -900,7 +985,6 @@ footer {
 
 <!-- NAV -->
 <nav>
-  <a href="#hero" class="nav-logo">ua<span>.</span>dev</a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#hobbies">Hobbies</a></li>
@@ -1124,7 +1208,7 @@ footer {
         <span>LinkedIn</span>
         <span class="contact-link-arrow">↗</span>
       </a>
-      <a href="attachments/UlyssiesAdams_Resume.pdf" class="contact-link" target="_blank" rel="noopener noreferrer">
+      <a href="attachments/UlyssiesAdams_Resume.pdf" class="contact-link" id="resume-link" aria-haspopup="dialog">
         <span>Resume</span>
         <span class="contact-link-arrow">↗</span>
       </a>
@@ -1138,7 +1222,56 @@ footer {
   <span class="footer-text">Built from scratch · Fayetteville, GA</span>
 </footer>
 
+<!-- RESUME MODAL -->
+<div id="resume-modal-backdrop" class="resume-modal-backdrop" role="dialog" aria-modal="true" aria-label="Resume viewer" aria-hidden="true">
+  <div class="resume-modal-dialog">
+    <button type="button" class="resume-modal-close" id="resume-modal-close" aria-label="Close resume viewer">×</button>
+    <div class="resume-modal-iframe-wrap">
+      <iframe id="resume-modal-iframe" class="resume-modal-iframe" title="Resume PDF"></iframe>
+    </div>
+    <p class="resume-modal-fallback">If the resume doesn't appear, <a id="resume-modal-fallback-link" href="#" target="_blank" rel="noopener">open it in a new tab</a>.</p>
+  </div>
+</div>
+
 <script>
+// ── RESUME MODAL ──────────────────────────────────────────
+const RESUME_PATH = 'attachments/UlyssiesAdams_Resume.pdf';
+const RESUME_URL = new URL(RESUME_PATH, window.location.href).href;
+const resumeLink = document.getElementById('resume-link');
+const resumeBackdrop = document.getElementById('resume-modal-backdrop');
+const resumeCloseBtn = document.getElementById('resume-modal-close');
+const resumeIframe = document.getElementById('resume-modal-iframe');
+const resumeFallbackLink = document.getElementById('resume-modal-fallback-link');
+
+function openResumeModal() {
+  resumeIframe.src = RESUME_URL;
+  if (resumeFallbackLink) resumeFallbackLink.href = RESUME_URL;
+  resumeBackdrop.classList.add('is-open');
+  resumeBackdrop.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  resumeCloseBtn.focus();
+  document.addEventListener('keydown', handleResumeModalEscape);
+}
+function closeResumeModal() {
+  resumeBackdrop.classList.remove('is-open');
+  resumeBackdrop.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+  resumeIframe.src = '';
+  document.removeEventListener('keydown', handleResumeModalEscape);
+}
+function handleResumeModalEscape(e) {
+  if (e.key === 'Escape') closeResumeModal();
+}
+
+resumeLink.addEventListener('click', (e) => {
+  e.preventDefault();
+  openResumeModal();
+});
+resumeCloseBtn.addEventListener('click', closeResumeModal);
+resumeBackdrop.addEventListener('click', (e) => {
+  if (e.target === resumeBackdrop) closeResumeModal();
+});
+
 // ── THEME TOGGLE ──────────────────────────────────────────
 const toggle = document.getElementById('themeToggle');
 const html = document.documentElement;
