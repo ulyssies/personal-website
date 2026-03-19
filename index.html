@@ -166,6 +166,17 @@ nav {
   height: 100%;
 }
 
+/* ── FALLING PARTICLES ───────────────────────────────────── */
+#falling-particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
 .hero-content {
   position: relative;
   z-index: 2;
@@ -200,6 +211,11 @@ nav {
 .hero-name .last {
   display: block;
   color: #ffffff;
+}
+
+[data-theme="light"] .hero-name,
+[data-theme="light"] .hero-name .last {
+  color: #000000;
 }
 
 .hero-sub {
@@ -562,19 +578,63 @@ i[data-lucide] {
   color: #c4b5fd;
 }
 
+#into-now .letterboxd-card {
+  position: relative;
+  overflow: hidden;
+}
+
+#into-now .letterboxd-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.55), rgba(255,255,255,0.02));
+  pointer-events: none;
+  opacity: 0.9;
+}
+
 #into-now .letterboxd-card-inner {
+  position: relative;
+  z-index: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  height: 100%;
   justify-content: center;
+  gap: 10px;
+  padding: 16px 18px 22px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-#into-now .letterboxd-icon-row {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 4px;
+#into-now .letterboxd-avatar-wrap {
+  position: relative;
+  width: 86px;
+  height: 86px;
+  display: grid;
+  place-items: center;
+  margin-top: 18px;
+  margin-bottom: -4px;
+}
+
+#into-now .letterboxd-avatar-wrap::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 35%, rgba(167,139,250,0.22), rgba(167,139,250,0) 65%);
+  filter: blur(6px);
+  opacity: 1;
+}
+
+#into-now .letterboxd-avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: url("attachments/66501E6C-396C-4975-9632-4BAE718D5C38_1_201_a.jpeg") center/cover no-repeat;
+  border: 2px solid rgba(167,139,250,0.9);
+  box-shadow: 0 10px 22px rgba(0,0,0,0.35), 0 0 0 4px rgba(167,139,250,0.12);
 }
 
 #into-now .letterboxd-username {
@@ -586,6 +646,7 @@ i[data-lucide] {
 }
 
 #into-now .letterboxd-tagline {
+  font-family: 'DM Sans', sans-serif;
   font-size: 12px;
   color: #64748b;
   text-align: center;
@@ -595,7 +656,7 @@ i[data-lucide] {
   width: 100%;
   height: 1px;
   background: #1e293b;
-  margin: 4px 0 8px 0;
+  margin: 6px 0 6px 0;
 }
 
 #into-now .letterboxd-genres {
@@ -606,7 +667,8 @@ i[data-lucide] {
 }
 
 #into-now .letterboxd-genre-tag {
-  background: #1e293b;
+  background: rgba(167, 139, 250, 0.06);
+  border: 1px solid rgba(167, 139, 250, 0.22);
   color: #94a3b8;
   padding: 4px 10px;
   border-radius: 20px;
@@ -614,11 +676,11 @@ i[data-lucide] {
 }
 
 #into-now .letterboxd-rating-stars {
-  font-size: 18px;
+  font-size: 20px;
   letter-spacing: 2px;
   color: #00e054;
   text-align: center;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 #into-now .letterboxd-rating-label {
@@ -628,8 +690,9 @@ i[data-lucide] {
 }
 
 #into-now .letterboxd-cta-btn {
-  margin-top: 10px;
+  margin-top: 0px;
   width: 100%;
+  max-width: 360px;
   background: transparent;
   color: #a78bfa;
   border: 1px solid #a78bfa44;
@@ -637,6 +700,15 @@ i[data-lucide] {
   padding: 9px;
   font-size: 13px;
   cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.08em;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+#into-now .letterboxd-card:hover .letterboxd-cta-btn {
+  background: rgba(167, 139, 250, 0.15);
+  color: #c4b5fd;
+  border-color: rgba(167, 139, 250, 0.65);
 }
 
 /* ── PROJECTS ─────────────────────────────────────────────── */
@@ -728,6 +800,172 @@ i[data-lucide] {
   color: var(--text);
   transform: translate(3px, -3px);
 }
+
+/* ── PROJECT PREVIEW DRAWERS ───────────────────────────────── */
+.project-toggle {
+  outline: none;
+}
+
+.project-preview-hint {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  opacity: 0.7;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.project-toggle.is-open .project-preview-hint {
+  color: #a78bfa;
+  opacity: 0.9;
+}
+
+.project-drawer {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-6px) scale(0.99);
+  overflow: hidden;
+  transition: max-height 0.35s ease, opacity 0.2s ease, transform 0.25s ease;
+}
+
+.project-toggle.is-open .project-drawer {
+  max-height: 700px;
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.project-preview-iframe-wrap {
+  width: 100%;
+  height: 480px;
+  border-radius: 8px;
+  overflow: hidden;
+  pointer-events: none; /* allow viewing, prevent interaction */
+  position: relative;
+  background: var(--card-bg);
+}
+
+.project-preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  display: none;
+}
+
+.project-preview-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-preview-spinner::before {
+  content: '';
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 3px solid var(--card-border);
+  border-top-color: #a78bfa;
+  animation: projectPreviewSpin 1s linear infinite;
+}
+
+@keyframes projectPreviewSpin {
+  to { transform: rotate(360deg); }
+}
+
+.project-preview-error {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+}
+
+.project-preview-cta {
+  margin-top: 16px;
+  width: 100%;
+  background: transparent;
+  color: #a78bfa;
+  border: 1px solid #a78bfa44;
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.project-preview-cta:hover {
+  border-color: #a78bfa;
+}
+
+.project-spotify-mockup {
+  height: 480px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.project-spotify-chart {
+  width: 100%;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 20px 16px;
+  background: var(--card-bg);
+}
+
+.project-spotify-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+}
+
+.project-spotify-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  align-items: center;
+  margin: 14px 0;
+}
+
+.project-spotify-genre {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-spotify-track {
+  height: 10px;
+  background: var(--card-border);
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.project-spotify-fill {
+  height: 100%;
+  background: #00e054;
+  border-radius: 999px;
+}
+
+/* ── PROJECTS END ─────────────────────────────────────────── */
 
 .project-status {
   display: inline-flex;
@@ -982,6 +1220,7 @@ footer {
 <body>
 
 <div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
+<canvas id="falling-particles-canvas" aria-hidden="true"></canvas>
 
 <!-- NAV -->
 <nav>
@@ -1033,6 +1272,9 @@ footer {
         <span class="tag">Next.js</span>
         <span class="tag">HTML/CSS/JS</span>
         <span class="tag">OpenAI API</span>
+        <span class="tag">Node.js</span>
+        <span class="tag">Anthropic API</span>
+        <span class="tag">Vercel</span>
         <span class="tag">Streamlit</span>
         <span class="tag">pandas</span>
         <span class="tag">Git</span>
@@ -1099,8 +1341,8 @@ footer {
       <span class="into-now-panel-label">Add Me on Letterboxd <i data-lucide="film"></i></span>
       <a href="https://letterboxd.com/ulyssies/" class="letterboxd-card" target="_blank" rel="noopener noreferrer">
         <div class="letterboxd-card-inner">
-          <div class="letterboxd-icon-row">
-            <i data-lucide="film" style="width:28px;height:28px;stroke:#a78bfa;stroke-width:1.5"></i>
+          <div class="letterboxd-avatar-wrap" aria-hidden="true">
+            <div class="letterboxd-avatar"></div>
           </div>
           <div class="letterboxd-username">ulyssies</div>
           <p class="letterboxd-tagline">cinema enthusiast · Atlanta</p>
@@ -1128,7 +1370,7 @@ footer {
   <div class="projects-grid reveal">
 
     <!-- Featured -->
-    <a class="project-card" href="#" target="_blank">
+    <div class="project-card project-toggle" role="button" tabindex="0" aria-expanded="false" data-project-preview="001" data-preview-type="iframe" data-preview-url="https://ai-news-podcast-generation.vercel.app">
       <div class="project-status">
         <span class="status-dot"></span>
         Live · In development
@@ -1145,10 +1387,20 @@ footer {
         <span class="tag">TypeScript</span>
       </div>
       <span class="project-arrow">↗</span>
-    </a>
+
+      <div class="project-drawer" aria-hidden="true">
+        <div class="project-preview-iframe-wrap">
+          <span class="project-preview-hint">Preview</span>
+          <div class="project-preview-spinner" aria-hidden="true"></div>
+          <div class="project-preview-error" aria-live="polite">Preview unavailable — site blocks embedding</div>
+          <iframe class="project-preview-iframe" loading="lazy" title="AI News Podcast Generator preview"></iframe>
+        </div>
+        <button type="button" class="project-preview-cta">Open live site ↗</button>
+      </div>
+    </div>
 
     <!-- Job Match Agent -->
-    <a class="project-card" href="https://ulyssies.github.io/job-agent" target="_blank" rel="noopener noreferrer">
+    <div class="project-card project-toggle" role="button" tabindex="0" aria-expanded="false" data-project-preview="002" data-preview-type="iframe" data-preview-url="https://ulyssies.github.io/job-agent">
       <div class="project-status">
         <span class="status-dot"></span>
         Live
@@ -1163,10 +1415,20 @@ footer {
         <span class="tag">Nodemailer</span>
       </div>
       <span class="project-arrow">↗</span>
-    </a>
+
+      <div class="project-drawer" aria-hidden="true">
+        <div class="project-preview-iframe-wrap">
+          <span class="project-preview-hint">Preview</span>
+          <div class="project-preview-spinner" aria-hidden="true"></div>
+          <div class="project-preview-error" aria-live="polite">Preview unavailable — site blocks embedding</div>
+          <iframe class="project-preview-iframe" loading="lazy" title="Job Match Agent preview"></iframe>
+        </div>
+        <button type="button" class="project-preview-cta">Open live site ↗</button>
+      </div>
+    </div>
 
     <!-- Spotify Data Pipeline -->
-    <a class="project-card" href="#" target="_blank">
+    <div class="project-card project-toggle" role="button" tabindex="0" aria-expanded="false" data-project-preview="003" data-preview-type="mockup">
       <p class="project-num">003</p>
       <h3 class="project-title">Spotify Data Pipeline Platform</h3>
       <p class="project-desc">Python-based ETL pipeline that extracts and transforms Spotify API data for structured storage and longitudinal analysis of listening behavior. Normalized metadata modeled and persisted in SQLite; Streamlit app with interactive visual components for exploring the data.</p>
@@ -1178,7 +1440,35 @@ footer {
         <span class="tag">Streamlit</span>
       </div>
       <span class="project-arrow">↗</span>
-    </a>
+
+      <div class="project-drawer" aria-hidden="true">
+        <div class="project-spotify-mockup" aria-label="Spotify genre preview chart">
+          <span class="project-preview-hint">Preview</span>
+          <div class="project-spotify-chart">
+            <div class="project-spotify-row">
+              <span class="project-spotify-genre">Pop</span>
+              <div class="project-spotify-track"><div class="project-spotify-fill" style="width:78%"></div></div>
+            </div>
+            <div class="project-spotify-row">
+              <span class="project-spotify-genre">Rock</span>
+              <div class="project-spotify-track"><div class="project-spotify-fill" style="width:66%"></div></div>
+            </div>
+            <div class="project-spotify-row">
+              <span class="project-spotify-genre">Hip-Hop</span>
+              <div class="project-spotify-track"><div class="project-spotify-fill" style="width:54%"></div></div>
+            </div>
+            <div class="project-spotify-row">
+              <span class="project-spotify-genre">Electronic</span>
+              <div class="project-spotify-track"><div class="project-spotify-fill" style="width:48%"></div></div>
+            </div>
+            <div class="project-spotify-row">
+              <span class="project-spotify-genre">Jazz</span>
+              <div class="project-spotify-track"><div class="project-spotify-fill" style="width:22%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </section>
@@ -1219,7 +1509,7 @@ footer {
 <!-- FOOTER -->
 <footer>
   <span class="footer-text">© 2026 Ulyssies Adams</span>
-  <span class="footer-text">Built from scratch · Fayetteville, GA</span>
+  <span class="footer-text">Built from scratch</span>
 </footer>
 
 <!-- RESUME MODAL -->
@@ -1433,6 +1723,191 @@ function updateReadingProgress() {
 }
 window.addEventListener('scroll', updateReadingProgress);
 updateReadingProgress();
+
+// ── FALLING PARTICLES ──────────────────────────────────────
+const fallingCanvas = document.getElementById('falling-particles-canvas');
+const fallingCtx = fallingCanvas.getContext('2d');
+
+let fpW = 0;
+let fpH = 0;
+let fpDpr = 1;
+let fpTime = 0;
+
+const FP_COUNT = 90;
+const fallingParticles = Array.from({ length: FP_COUNT }, () => ({
+  x: 0,
+  y: 0,
+  size: 0,
+  opacity: 0,
+  speed: 0,
+  phase: Math.random() * Math.PI * 2,
+}));
+
+function fpRand(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function fpResize() {
+  const rect = fallingCanvas.getBoundingClientRect();
+  fpW = rect.width;
+  fpH = rect.height;
+  fpDpr = window.devicePixelRatio || 1;
+  fallingCanvas.width = Math.max(1, Math.floor(fpW * fpDpr));
+  fallingCanvas.height = Math.max(1, Math.floor(fpH * fpDpr));
+  fallingCtx.setTransform(fpDpr, 0, 0, fpDpr, 0, 0);
+}
+
+function fpInitOnce() {
+  // Initialize positions and per-particle attributes one time
+  for (const p of fallingParticles) {
+    p.x = Math.random() * fpW;
+    p.y = Math.random() * fpH;
+    p.size = fpRand(0.6, 2.8);
+    p.speed = fpRand(0.2, 0.75);
+    // Simulate depth with opacity instead of expensive blur:
+    // smaller particles are dimmer, larger are brighter.
+    p.opacity = p.size < 1.3 ? fpRand(0.08, 0.25) : fpRand(0.35, 0.6);
+  }
+}
+
+function fpResetParticle(p) {
+  p.x = Math.random() * fpW;
+  p.y = -5;
+}
+
+function fpDraw() {
+  fpTime += 0.012;
+  fallingCtx.filter = 'none';
+  fallingCtx.clearRect(0, 0, fpW, fpH);
+
+  for (const p of fallingParticles) {
+    // subtle sine wobble ±0.15px
+    const drift = Math.sin(fpTime + p.phase) * 0.15;
+    p.y += p.speed;
+
+    if (p.y - p.size > fpH) {
+      fpResetParticle(p);
+    }
+
+    fallingCtx.beginPath();
+    fallingCtx.arc(p.x + drift, p.y, p.size, 0, Math.PI * 2);
+    fallingCtx.fillStyle = `rgba(200,191,175,${p.opacity})`;
+    fallingCtx.fill();
+  }
+
+  requestAnimationFrame(fpDraw);
+}
+
+fpResize();
+fpInitOnce();
+fpDraw();
+window.addEventListener('resize', () => {
+  fpResize(); // do not re-initialize particles
+});
+
+// ── PROJECT PREVIEW DRAWERS ───────────────────────────────
+const projectToggles = document.querySelectorAll('.project-toggle[data-project-preview]');
+let openProjectToggle = null;
+
+function closeProjectDrawer(toggleEl) {
+  if (!toggleEl) return;
+  toggleEl.classList.remove('is-open');
+  toggleEl.setAttribute('aria-expanded', 'false');
+  const drawer = toggleEl.querySelector('.project-drawer');
+  if (drawer) drawer.setAttribute('aria-hidden', 'true');
+}
+
+function openProjectDrawer(toggleEl) {
+  if (!toggleEl) return;
+  if (openProjectToggle && openProjectToggle !== toggleEl) {
+    closeProjectDrawer(openProjectToggle);
+  }
+  openProjectToggle = toggleEl;
+  toggleEl.classList.add('is-open');
+  toggleEl.setAttribute('aria-expanded', 'true');
+  const drawer = toggleEl.querySelector('.project-drawer');
+  if (drawer) drawer.setAttribute('aria-hidden', 'false');
+
+  const iframe = toggleEl.querySelector('iframe.project-preview-iframe');
+  if (!iframe) return;
+
+  if (toggleEl.dataset.previewLoaded === 'true') return;
+  toggleEl.dataset.previewLoaded = 'true';
+
+  const spinner = toggleEl.querySelector('.project-preview-spinner');
+  const errorEl = toggleEl.querySelector('.project-preview-error');
+  const iframeWrap = toggleEl.querySelector('.project-preview-iframe-wrap');
+
+  // Prepare UI for loading
+  if (spinner) spinner.style.display = 'flex';
+  if (errorEl) errorEl.style.display = 'none';
+  if (iframeWrap) iframeWrap.style.background = 'var(--card-bg)';
+  iframe.style.display = 'block';
+
+  const url = toggleEl.dataset.previewUrl;
+  let timedOut = false;
+
+  const timeoutId = setTimeout(() => {
+    timedOut = true;
+    if (spinner) spinner.style.display = 'none';
+    iframe.style.display = 'none';
+    if (errorEl) errorEl.style.display = 'flex';
+  }, 4000);
+
+  iframe.addEventListener(
+    'load',
+    () => {
+      if (timedOut) return;
+      clearTimeout(timeoutId);
+      if (spinner) spinner.style.display = 'none';
+      if (errorEl) errorEl.style.display = 'none';
+    },
+    { once: true }
+  );
+
+  // Lazy-load only when first opened
+  iframe.src = url;
+}
+
+projectToggles.forEach(toggleEl => {
+  // Ensure drawer is hidden initially
+  const drawer = toggleEl.querySelector('.project-drawer');
+  if (drawer) drawer.setAttribute('aria-hidden', 'true');
+
+  const toggle = () => {
+    const isOpen = toggleEl.classList.contains('is-open');
+    if (isOpen) {
+      closeProjectDrawer(toggleEl);
+      if (openProjectToggle === toggleEl) openProjectToggle = null;
+    } else {
+      openProjectDrawer(toggleEl);
+    }
+  };
+
+  toggleEl.addEventListener('click', (e) => {
+    if (e.target.closest('.project-preview-cta')) return; // CTA should not toggle
+    if (e.target.closest('.project-preview-cta')) return;
+    e.preventDefault();
+    toggle();
+  });
+
+  toggleEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    }
+  });
+});
+
+// CTA buttons open the live site without toggling drawers
+document.querySelectorAll('.project-preview-cta').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const toggleEl = btn.closest('.project-toggle');
+    const url = toggleEl ? toggleEl.dataset.previewUrl : null;
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  });
+});
 
 // ── SCROLL REVEAL ─────────────────────────────────────────
 const reveals = document.querySelectorAll('.reveal');
