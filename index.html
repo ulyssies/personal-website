@@ -232,7 +232,7 @@ nav {
 .hero-sub .hero-highlight {
   color: #64748b;
   transition: color 0.4s ease;
-  animation: heroHighlight1 3s ease-in-out infinite;
+  animation: heroHighlight1 2s ease-in-out infinite;
 }
 
 .hero-sub .hero-highlight:nth-child(3) {
@@ -240,26 +240,14 @@ nav {
   animation-delay: -1s;
 }
 
-.hero-sub .hero-highlight:nth-child(5) {
-  animation-name: heroHighlight3;
-  animation-delay: -2s;
-}
-
 @keyframes heroHighlight1 {
-  0%, 20% { color: #ffffff; }
-  33.33%, 86.67% { color: #64748b; }
-  100% { color: #ffffff; }
+  0%, 35% { color: #ffffff; }
+  50%, 100% { color: #64748b; }
 }
 
 @keyframes heroHighlight2 {
-  0%, 33.33% { color: #64748b; }
-  46.67%, 66.67% { color: #ffffff; }
-  80%, 100% { color: #64748b; }
-}
-
-@keyframes heroHighlight3 {
-  0%, 66.66% { color: #64748b; }
-  80%, 96.67% { color: #ffffff; }
+  0%, 50% { color: #64748b; }
+  65%, 85% { color: #ffffff; }
   100% { color: #64748b; }
 }
 
@@ -1243,7 +1231,7 @@ footer {
       <span class="last">Adams</span>
     </h1>
     <p class="hero-sub">
-      <span class="hero-highlight">Software Engineer</span><span class="hero-sep">  ·  </span><span class="hero-highlight">AI Builder</span><span class="hero-sep">  ·  </span><span class="hero-highlight">Atlanta, GA</span>
+      <span class="hero-highlight">Software Engineer</span><span class="hero-sep">  ·  </span><span class="hero-highlight">Atlanta, GA</span>
     </p>
   </div>
   <div class="hero-scroll">
@@ -1275,6 +1263,7 @@ footer {
         <span class="tag">Node.js</span>
         <span class="tag">Anthropic API</span>
         <span class="tag">Vercel</span>
+        <span class="tag">Java</span>
         <span class="tag">Streamlit</span>
         <span class="tag">pandas</span>
         <span class="tag">Git</span>
