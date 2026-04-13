@@ -17,7 +17,7 @@
 
 ---
 
-*Built by [Ulyssies Adams](https://ulyssies.github.io/personal-website/)*
+* [Live Website](https://ulyssies.github.io/personal-website/)*
 
 ## Overview
 
