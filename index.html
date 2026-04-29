@@ -691,7 +691,12 @@ i[data-lucide] {
   font-family: 'DM Mono', monospace;
   letter-spacing: 0.08em;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
+#into-now .letterboxd-cta-btn svg { width: 14px; height: 14px; }
 
 #into-now .letterboxd-card:hover .letterboxd-cta-btn {
   background: rgba(167, 139, 250, 0.15);
@@ -700,6 +705,12 @@ i[data-lucide] {
 }
 
 /* ── PROJECTS ─────────────────────────────────────────────── */
+/* Featured card stacks under the carousel so the seam still hits carousel links (001 stays interactive in its own box). */
+.project-featured {
+  position: relative;
+  z-index: 0;
+}
+
 .project-featured .project-card {
   border-radius: 12px 12px 0 0;
 }
@@ -724,10 +735,21 @@ i[data-lucide] {
   background: var(--card-hover);
   opacity: 0;
   transition: opacity 0.3s;
+  pointer-events: none;
 }
 
 .project-card:hover::before { opacity: 1; }
 .project-card:hover { border-color: var(--border-hover); }
+
+.project-featured .project-card:hover {
+  border-color: #a78bfa;
+  box-shadow: 0 8px 24px rgba(167, 139, 250, 0.25), 0 0 0 1px rgba(167, 139, 250, 0.15);
+}
+
+[data-theme="light"] .project-featured .project-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.1);
+}
 
 .project-num {
   font-family: 'DM Mono', monospace;
@@ -770,10 +792,11 @@ i[data-lucide] {
   position: absolute;
   top: 40px;
   right: 40px;
-  font-size: 20px;
   color: var(--text3);
   transition: all 0.3s;
+  display: flex;
 }
+.project-arrow svg { width: 20px; height: 20px; }
 
 .project-card:hover .project-arrow {
   color: var(--text);
@@ -882,71 +905,23 @@ i[data-lucide] {
   padding: 9px;
   font-size: 13px;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
+.project-preview-cta svg { width: 14px; height: 14px; }
 
 .project-preview-cta:hover {
   border-color: #a78bfa;
 }
 
-.project-spotify-mockup {
-  height: 480px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.project-spotify-chart {
-  width: 100%;
-  border: 1px solid var(--card-border);
-  border-radius: 8px;
-  padding: 20px 16px;
-  background: var(--card-bg);
-}
-
-.project-spotify-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text3);
-  margin-bottom: 16px;
-}
-
-.project-spotify-row {
-  display: grid;
-  grid-template-columns: 120px 1fr;
-  gap: 16px;
-  align-items: center;
-  margin: 14px 0;
-}
-
-.project-spotify-genre {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.project-spotify-track {
-  height: 10px;
-  background: var(--card-border);
-  border: 1px solid var(--card-border);
-  border-radius: 999px;
-  overflow: hidden;
-}
-
-.project-spotify-fill {
-  height: 100%;
-  background: #00e054;
-  border-radius: 999px;
-}
 
 /* ── PROJECT CAROUSEL ─────────────────────────────────────── */
 .project-carousel {
   margin-top: 2px;
+  position: relative;
+  z-index: 3;
 }
 
 .carousel-viewport {
@@ -970,25 +945,20 @@ i[data-lucide] {
 .carousel-slide .project-card {
   flex: 1;
   border-radius: 0;
-  cursor: default;
-}
-
-.carousel-card-link {
-  display: inline-block;
-  margin-top: 24px;
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: #a78bfa;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
-  letter-spacing: 0.05em;
-  border: 1px solid rgba(167,139,250,0.27);
-  border-radius: 6px;
-  padding: 7px 14px;
-  transition: border-color 0.2s;
+  color: inherit;
 }
 
-.carousel-card-link:hover {
+.carousel-slide .project-card:hover {
   border-color: #a78bfa;
+  box-shadow: 0 8px 24px rgba(167, 139, 250, 0.25), 0 0 0 1px rgba(167, 139, 250, 0.15);
+}
+
+[data-theme="light"] .carousel-slide .project-card:hover {
+  border-color: #7c3aed;
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.1);
 }
 
 .carousel-controls {
@@ -1057,6 +1027,11 @@ i[data-lucide] {
   margin-bottom: 16px;
 }
 
+.project-status--ghost {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .status-dot {
   width: 6px;
   height: 6px;
@@ -1123,9 +1098,10 @@ i[data-lucide] {
 }
 
 .contact-link-arrow {
-  font-size: 18px;
+  display: flex;
   transition: transform 0.2s;
 }
+.contact-link-arrow svg { width: 18px; height: 18px; }
 .contact-link:hover .contact-link-arrow {
   transform: translate(4px, -4px);
 }
@@ -1388,7 +1364,7 @@ footer {
         <span class="tag">React</span>
         <span class="tag">TypeScript</span>
       </div>
-      <span class="project-arrow">↗</span>
+      <span class="project-arrow"><i data-lucide="arrow-up-right"></i></span>
 
       <div class="project-drawer" aria-hidden="true">
         <div class="project-preview-iframe-wrap">
@@ -1397,7 +1373,7 @@ footer {
           <div class="project-preview-error" aria-live="polite">Preview unavailable — site blocks embedding</div>
           <iframe class="project-preview-iframe" loading="lazy" title="AI News Podcast Generator preview"></iframe>
         </div>
-        <button type="button" class="project-preview-cta">Open live site ↗</button>
+        <button type="button" class="project-preview-cta">Open live site <i data-lucide="arrow-up-right"></i></button>
       </div>
     </div>
   </div>
@@ -1409,7 +1385,7 @@ footer {
 
         <!-- 002 Job Match Agent -->
         <div class="carousel-slide">
-          <div class="project-card">
+          <a class="project-card" href="https://ulyssies.github.io/job-agent" target="_blank" rel="noopener noreferrer">
             <div class="project-status">
               <span class="status-dot"></span>
               Live
@@ -1423,13 +1399,13 @@ footer {
               <span class="tag">Adzuna API</span>
               <span class="tag">Nodemailer</span>
             </div>
-            <a href="https://ulyssies.github.io/job-agent" target="_blank" rel="noopener noreferrer" class="carousel-card-link">Open live site ↗</a>
-          </div>
+          </a>
         </div>
 
         <!-- 003 Spotify Data Pipeline -->
         <div class="carousel-slide">
-          <div class="project-card">
+          <a class="project-card" href="https://github.com/ulyssies/spotify_sql_project" target="_blank" rel="noopener noreferrer">
+            <div class="project-status project-status--ghost" aria-hidden="true"><span class="status-dot"></span></div>
             <p class="project-num">003</p>
             <h3 class="project-title">Spotify Data Pipeline</h3>
             <p class="project-desc">Python-based ETL pipeline that extracts and transforms Spotify API data for structured storage and longitudinal analysis of listening behavior. Normalized metadata modeled and persisted in SQLite; Streamlit app with interactive visual components for exploring the data.</p>
@@ -1440,13 +1416,13 @@ footer {
               <span class="tag">pandas</span>
               <span class="tag">Streamlit</span>
             </div>
-            <a href="https://github.com/ulyssies/spotify_sql_project" target="_blank" rel="noopener noreferrer" class="carousel-card-link">View on GitHub ↗</a>
-          </div>
+          </a>
         </div>
 
         <!-- 004 Fitness Agent -->
         <div class="carousel-slide">
-          <div class="project-card">
+          <a class="project-card" href="https://github.com/ulyssies/nutribot" target="_blank" rel="noopener noreferrer">
+            <div class="project-status project-status--ghost" aria-hidden="true"><span class="status-dot"></span></div>
             <p class="project-num">004</p>
             <h3 class="project-title">Fitness Agent</h3>
             <p class="project-desc">Telegram bot for fitness and nutrition tracking. Log meals by sending a photo — Claude Vision estimates calories and macros. Tracks body weight, generates weekly graphs, sends daily nudges, and answers free-text nutrition questions via a Claude-powered nutritionist persona. Multi-user architecture with per-user data isolation. Deployed on Render with Supabase for persistent storage.</p>
@@ -1457,8 +1433,7 @@ footer {
               <span class="tag">Telegram Bot API</span>
               <span class="tag">Render</span>
             </div>
-            <a href="https://github.com/ulyssies/nutribot" target="_blank" rel="noopener noreferrer" class="carousel-card-link">View on GitHub ↗</a>
-          </div>
+          </a>
         </div>
 
       </div>
@@ -1477,6 +1452,7 @@ footer {
         <i data-lucide="arrow-right"></i>
       </button>
     </div>
+
   </div>
 
 </section>
@@ -1549,7 +1525,7 @@ footer {
           </div>
           <div class="letterboxd-rating-stars">★★★☆☆</div>
           <div class="letterboxd-rating-label">avg rating</div>
-          <button class="letterboxd-cta-btn" type="button">Check out my profile →</button>
+          <button class="letterboxd-cta-btn" type="button">Check out my profile <i data-lucide="arrow-right"></i></button>
         </div>
       </a>
     </div>
@@ -1571,19 +1547,19 @@ footer {
     <div class="contact-links reveal" style="transition-delay:0.1s">
       <a href="mailto:ulyssiesadams@gmail.com" class="contact-link">
         <span>Email</span>
-        <span class="contact-link-arrow">↗</span>
+        <span class="contact-link-arrow"><i data-lucide="arrow-up-right"></i></span>
       </a>
       <a href="https://github.com/ulyssies" target="_blank" class="contact-link">
         <span>GitHub</span>
-        <span class="contact-link-arrow">↗</span>
+        <span class="contact-link-arrow"><i data-lucide="arrow-up-right"></i></span>
       </a>
       <a href="https://linkedin.com/in/ulyssiesadams" target="_blank" class="contact-link">
         <span>LinkedIn</span>
-        <span class="contact-link-arrow">↗</span>
+        <span class="contact-link-arrow"><i data-lucide="arrow-up-right"></i></span>
       </a>
       <a href="attachments/UlyssiesAdams_Resume.pdf" class="contact-link" id="resume-link" aria-haspopup="dialog">
         <span>Resume</span>
-        <span class="contact-link-arrow">↗</span>
+        <span class="contact-link-arrow"><i data-lucide="arrow-up-right"></i></span>
       </a>
     </div>
   </div>
@@ -1889,7 +1865,7 @@ window.addEventListener('resize', () => {
 });
 
 // ── PROJECT PREVIEW DRAWERS ───────────────────────────────
-const projectToggles = document.querySelectorAll('.project-toggle[data-project-preview]');
+const projectToggles = document.querySelectorAll('.project-featured .project-toggle[data-project-preview]');
 let openProjectToggle = null;
 
 function closeProjectDrawer(toggleEl) {
@@ -1982,8 +1958,8 @@ projectToggles.forEach(toggleEl => {
   });
 });
 
-// CTA buttons open the live site without toggling drawers
-document.querySelectorAll('.project-preview-cta').forEach(btn => {
+// CTA buttons open the live site without toggling drawers (featured card only)
+document.querySelectorAll('.project-featured .project-preview-cta').forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.stopPropagation();
     const toggleEl = btn.closest('.project-toggle');
