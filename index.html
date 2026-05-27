@@ -3,10 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ulyssies Adams</title>
+<title>Ulyssies Z. Adams</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+(() => {
+  try {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
@@ -23,14 +35,21 @@
   --accent: #e8e0d0;
   --accent2: #c8bfaf;
   --grit: #2a2520;
-  --sphere-color: rgba(200,191,175,0.6);
-  --sphere-line: rgba(200,191,175,0.15);
+  --network-bg: #1a1a1a;
+  --network-dot: #aaaaaa;
+  --network-dot-rgb: 170,170,170;
+  --network-line-rgb: 180,180,180;
+  --network-line-alpha: 0.3;
   --name-color: #f0ede8;
   --tag-bg: rgba(255,255,255,0.05);
   --tag-border: rgba(255,255,255,0.1);
   --card-bg: #111111;
   --card-border: rgba(255,255,255,0.06);
   --card-hover: rgba(255,255,255,0.04);
+  --gallery-caption-bg: rgba(10,10,10,0.72);
+  --gallery-caption-text: #f0ede8;
+  --gallery-control-bg: rgba(245,242,237,0.88);
+  --gallery-control-text: #1a1714;
   --noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
@@ -47,26 +66,33 @@
   --accent: #1a1714;
   --accent2: #3a3530;
   --grit: #d5cfc5;
-  --sphere-color: rgba(30,25,20,0.55);
-  --sphere-line: rgba(30,25,20,0.12);
+  --network-bg: #b8b8b8;
+  --network-dot: #555555;
+  --network-dot-rgb: 55,55,55;
+  --network-line-rgb: 50,50,50;
+  --network-line-alpha: 0.4;
   --name-color: #0a0806;
   --tag-bg: rgba(0,0,0,0.04);
   --tag-border: rgba(0,0,0,0.1);
   --card-bg: #ede9e3;
   --card-border: rgba(0,0,0,0.06);
   --card-hover: rgba(0,0,0,0.03);
+  --gallery-caption-bg: rgba(245,242,237,0.78);
+  --gallery-caption-text: var(--text);
+  --gallery-control-bg: rgba(245,242,237,0.9);
+  --gallery-control-text: #1a1714;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg);
+  background: var(--network-bg);
   color: var(--text);
   font-family: 'DM Sans', sans-serif;
   font-size: 16px;
   line-height: 1.6;
   overflow-x: hidden;
-  transition: background 0.4s ease, color 0.4s ease;
+  transition: color 0.4s ease;
 }
 
 body::before {
@@ -77,6 +103,16 @@ body::before {
   pointer-events: none;
   z-index: 0;
   opacity: 0.6;
+}
+
+#particle-network-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  background: var(--network-bg);
 }
 
 /* ── NAV ─────────────────────────────────────────────────── */
@@ -119,34 +155,76 @@ nav {
 .nav-links a:hover { color: var(--text); }
 
 .theme-toggle {
-  position: absolute;
-  right: 48px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: fixed;
+  right: 32px;
+  top: 16px;
+  z-index: 200;
+  display: block;
   background: var(--tag-bg);
   border: 1px solid var(--border);
-  border-radius: 20px;
-  width: 44px;
-  height: 24px;
+  border-radius: 999px;
+  width: 58px;
+  height: 30px;
+  color: var(--text2);
   cursor: pointer;
-  transition: all 0.3s ease;
+  backdrop-filter: blur(16px);
+  overflow: hidden;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
   flex-shrink: 0;
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-hover);
+  color: var(--text);
+  background: var(--card-hover);
 }
 
 .theme-toggle::after {
   content: '';
   position: absolute;
-  top: 3px; left: 3px;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--text2);
-  transition: all 0.3s ease;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--text);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  z-index: 2;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s ease;
 }
 
 [data-theme="light"] .theme-toggle::after {
-  transform: translateX(20px);
-  background: var(--text);
+  transform: translateX(28px);
 }
+
+.theme-toggle:focus { outline: none; }
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent2);
+  outline-offset: 3px;
+}
+
+.theme-toggle i {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  width: 18px;
+  height: 18px;
+  color: currentColor;
+  transform: translateY(-50%);
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.theme-icon-moon {
+  left: 5px;
+  opacity: 0;
+}
+
+.theme-icon-sun { right: 5px; }
+
+[data-theme="light"] .theme-icon-moon { opacity: 1; }
+
+[data-theme="light"] .theme-icon-sun { opacity: 0; }
 
 /* ── HERO ─────────────────────────────────────────────────── */
 #hero {
@@ -156,132 +234,181 @@ nav {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-}
-
-#sphere-canvas {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-/* ── FALLING PARTICLES ───────────────────────────────────── */
-#falling-particles-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
+  overflow: visible;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  text-align: center;
-  pointer-events: none;
-  user-select: none;
+  width: min(calc(100% - 48px), 928px);
+  display: grid;
+  grid-template-columns: 176px minmax(0, 720px);
+  align-items: center;
+  gap: 32px;
+  text-align: left;
+  pointer-events: auto;
+  user-select: text;
+}
+
+.hero-avatar-wrap {
+  width: 176px;
+  height: 176px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid var(--border-hover);
+  background: var(--bg3);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.28);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.35s forwards;
+}
+
+[data-theme="light"] .hero-avatar-wrap {
+  box-shadow: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+.hero-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-copy {
+  min-width: 0;
 }
 
 .hero-intro {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 22px;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
   font-weight: 300;
-  color: #94a3b8;
-  letter-spacing: 0.2em;
+  color: var(--text2);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
   margin-bottom: 8px;
   opacity: 0;
   animation: fadeUp 0.8s ease 0.5s forwards;
 }
 
 .hero-name {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(52px, 8vw, 96px);
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.03em;
-  line-height: 1;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 50px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0;
+  line-height: 1.05;
   opacity: 0;
   animation: fadeUp 0.8s ease 0.7s forwards;
 }
 
-.hero-name .first { display: block; }
+.hero-name .first,
+.hero-name .middle { display: inline; }
 .hero-name .last {
-  display: block;
-  color: #ffffff;
-}
-
-[data-theme="light"] .hero-name,
-[data-theme="light"] .hero-name .last {
-  color: #000000;
+  display: inline;
+  color: var(--text);
 }
 
 .hero-sub {
   font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  margin-top: 20px;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  margin-top: 18px;
   font-weight: 400;
+  color: var(--text2);
   opacity: 0;
   animation: fadeUp 0.8s ease 0.9s forwards;
 }
 
 .hero-sub .hero-highlight {
-  color: #64748b;
-  transition: color 0.4s ease;
-  animation: heroHighlight1 2s ease-in-out infinite;
-}
-
-.hero-sub .hero-highlight:nth-child(3) {
-  animation-name: heroHighlight2;
-  animation-delay: -1s;
-}
-
-@keyframes heroHighlight1 {
-  0%, 35% { color: #ffffff; }
-  50%, 100% { color: #64748b; }
-}
-
-@keyframes heroHighlight2 {
-  0%, 50% { color: #64748b; }
-  65%, 85% { color: #ffffff; }
-  100% { color: #64748b; }
+  color: var(--text);
 }
 
 .hero-sub .hero-sep {
-  color: #334155;
+  color: var(--text3);
   user-select: none;
+}
+
+.hero-socials {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 22px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1.1s forwards;
+}
+
+.hero-social-link {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.hero-social-link:hover {
+  color: var(--accent2);
+  background: var(--tag-bg);
+  transform: translateY(-2px);
+}
+
+.hero-social-link i,
+.hero-social-link svg {
+  width: 28px;
+  height: 28px;
+  color: currentColor;
+  stroke-width: 1.8;
 }
 
 .hero-scroll {
   position: absolute;
-  bottom: 40px;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  flex-direction: column;
   align-items: center;
   gap: 8px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-hover);
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--text);
+  text-decoration: none;
+  backdrop-filter: blur(16px);
   opacity: 0;
-  animation: fadeUp 0.8s ease 1.4s forwards;
+  animation: fadeUp 0.8s ease 1.4s forwards, scrollFloat 2.4s ease-in-out 2.2s infinite;
   z-index: 2;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.hero-scroll:hover {
+  border-color: var(--accent2);
+  background: var(--card-hover);
+}
+
+.hero-scroll i {
+  width: 16px;
+  height: 16px;
+  animation: chevronBounce 1.3s ease-in-out infinite;
 }
 
 .hero-scroll span {
   font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.15em;
+  font-size: 11px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text3);
+  color: currentColor;
 }
 
 .scroll-line {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
   width: 1px;
-  height: 40px;
+  height: 28px;
   background: linear-gradient(to bottom, var(--text3), transparent);
+  transform: translateX(-50%);
   animation: scrollPulse 2s ease-in-out infinite;
 }
 
@@ -705,14 +832,9 @@ i[data-lucide] {
 }
 
 /* ── PROJECTS ─────────────────────────────────────────────── */
-/* Featured card stacks under the carousel so the seam still hits carousel links (001 stays interactive in its own box). */
-.project-featured {
+.project-showcase {
   position: relative;
-  z-index: 0;
-}
-
-.project-featured .project-card {
-  border-radius: 12px 12px 0 0;
+  z-index: 2;
 }
 
 .project-card {
@@ -720,12 +842,14 @@ i[data-lucide] {
   border: 1px solid var(--card-border);
   padding: 40px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   position: relative;
   overflow: hidden;
   text-decoration: none;
   color: inherit;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  min-height: 520px;
 }
 
 .project-card::before {
@@ -741,14 +865,21 @@ i[data-lucide] {
 .project-card:hover::before { opacity: 1; }
 .project-card:hover { border-color: var(--border-hover); }
 
-.project-featured .project-card:hover {
+.project-card.is-selected,
+.project-card:hover {
   border-color: #a78bfa;
   box-shadow: 0 8px 24px rgba(167, 139, 250, 0.25), 0 0 0 1px rgba(167, 139, 250, 0.15);
 }
 
-[data-theme="light"] .project-featured .project-card:hover {
+[data-theme="light"] .project-card.is-selected,
+[data-theme="light"] .project-card:hover {
   border-color: #7c3aed;
   box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.1);
+}
+
+.project-card:focus-visible {
+  outline: 2px solid var(--accent2);
+  outline-offset: -6px;
 }
 
 .project-num {
@@ -761,7 +892,7 @@ i[data-lucide] {
 
 .project-title {
   font-family: 'Syne', sans-serif;
-  font-size: 24px;
+  font-size: clamp(28px, 3vw, 40px);
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.02em;
@@ -769,82 +900,87 @@ i[data-lucide] {
   line-height: 1.2;
 }
 
-.project-featured .project-card .project-title {
-  font-size: 36px;
-}
-
 .project-desc {
   font-size: 14px;
   color: var(--text2);
   line-height: 1.7;
   font-weight: 300;
-  max-width: 560px;
+  max-width: 680px;
 }
 
 .project-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 24px;
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.project-card-actions {
+  position: absolute;
+  top: 34px;
+  right: 34px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .project-arrow {
-  position: absolute;
-  top: 40px;
-  right: 40px;
   color: var(--text3);
   transition: all 0.3s;
-  display: flex;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
 }
 .project-arrow svg { width: 20px; height: 20px; }
 
+.project-card:hover .project-arrow { color: var(--text); }
+
 .project-card:hover .project-arrow {
-  color: var(--text);
   transform: translate(3px, -3px);
 }
 
-/* ── PROJECT PREVIEW DRAWERS ───────────────────────────────── */
-.project-toggle {
-  outline: none;
-}
-
-.project-preview-hint {
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
+.project-card-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin-top: 18px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
   font-family: 'DM Mono', monospace;
   font-size: 10px;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text3);
-  opacity: 0.7;
-  transition: color 0.2s ease, opacity 0.2s ease;
-  pointer-events: none;
-  z-index: 2;
+  background: var(--tag-bg);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 }
 
-.project-toggle.is-open .project-preview-hint {
-  color: #a78bfa;
-  opacity: 0.9;
+.project-card-hint svg {
+  width: 14px;
+  height: 14px;
 }
 
-.project-drawer {
-  max-height: 0;
-  opacity: 0;
-  transform: translateY(-6px) scale(0.99);
-  overflow: hidden;
-  transition: max-height 0.35s ease, opacity 0.2s ease, transform 0.25s ease;
+.project-card-hint--repo svg {
+  fill: currentColor;
+  stroke: none;
 }
 
-.project-toggle.is-open .project-drawer {
-  max-height: 700px;
-  opacity: 1;
-  transform: translateY(0) scale(1);
+.project-card:hover .project-card-hint,
+.project-card.is-selected .project-card-hint {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--card-hover);
 }
 
 .project-preview-iframe-wrap {
   width: 100%;
-  height: 480px;
+  height: 560px;
   border-radius: 8px;
   overflow: hidden;
   pointer-events: none; /* allow viewing, prevent interaction */
@@ -857,7 +993,13 @@ i[data-lucide] {
   height: 100%;
   border: none;
   border-radius: 8px;
-  display: none;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.project-preview-iframe.is-loaded {
+  opacity: 1;
 }
 
 .project-preview-spinner {
@@ -895,9 +1037,136 @@ i[data-lucide] {
   color: var(--text2);
 }
 
-.project-preview-cta {
+.project-preview-panel {
+  display: none;
+  margin-top: 18px;
+  padding: 28px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+.project-preview-panel.is-open {
+  display: block;
+}
+
+.project-preview-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-hover);
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.project-preview-header,
+.project-preview-body,
+.project-preview-actions {
+  position: relative;
+  z-index: 1;
+}
+
+.project-preview-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--tag-bg);
+  color: var(--text2);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.project-preview-close:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--card-hover);
+}
+
+.project-preview-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.project-preview-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding-right: 46px;
+}
+
+.project-preview-kicker {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: block;
+  margin-bottom: 8px;
+}
+
+.project-preview-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.1;
+  color: var(--text);
+}
+
+.project-preview-type {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+.project-preview-empty {
+  min-height: 320px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 32px;
+  color: var(--text2);
+}
+
+.project-preview-empty svg {
+  width: 42px;
+  height: 42px;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.project-preview-empty strong {
+  display: block;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.project-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 16px;
-  width: 100%;
+}
+
+.project-preview-cta {
+  width: auto;
   background: transparent;
   color: #a78bfa;
   border: 1px solid #a78bfa44;
@@ -909,6 +1178,9 @@ i[data-lucide] {
   align-items: center;
   justify-content: center;
   gap: 6px;
+  text-decoration: none;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.04em;
 }
 .project-preview-cta svg { width: 14px; height: 14px; }
 
@@ -916,17 +1188,92 @@ i[data-lucide] {
   border-color: #a78bfa;
 }
 
+.project-gallery-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  background: var(--card-bg);
+}
+
+.project-gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.project-gallery-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  transform: translateY(-50%);
+  border: 1px solid var(--border-hover);
+  border-radius: 8px;
+  background: var(--gallery-control-bg);
+  color: var(--gallery-control-text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.project-gallery-btn:hover {
+  border-color: var(--accent2);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.project-gallery-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.project-gallery-prev { left: 18px; }
+
+.project-gallery-next { right: 18px; }
+
+.project-gallery-caption {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  bottom: 14px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--gallery-caption-bg);
+  color: var(--gallery-caption-text);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(16px);
+}
+
+.project-gallery-count {
+  color: var(--text2);
+  white-space: nowrap;
+}
 
 /* ── PROJECT CAROUSEL ─────────────────────────────────────── */
 .project-carousel {
-  margin-top: 2px;
+  margin-top: 0;
   position: relative;
   z-index: 3;
+  padding-bottom: 42px;
 }
 
 .carousel-viewport {
   overflow: hidden;
-  border-radius: 0 0 12px 12px;
+  border-radius: 12px;
 }
 
 .carousel-track {
@@ -944,31 +1291,23 @@ i[data-lucide] {
 
 .carousel-slide .project-card {
   flex: 1;
-  border-radius: 0;
+  border-radius: 12px;
   cursor: pointer;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
   text-decoration: none;
   color: inherit;
 }
 
-.carousel-slide .project-card:hover {
-  border-color: #a78bfa;
-  box-shadow: 0 8px 24px rgba(167, 139, 250, 0.25), 0 0 0 1px rgba(167, 139, 250, 0.15);
-}
-
-[data-theme="light"] .carousel-slide .project-card:hover {
-  border-color: #7c3aed;
-  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.2), 0 0 0 1px rgba(124, 58, 237, 0.1);
-}
-
 .carousel-controls {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 4px 0;
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
 }
 
 .carousel-btn {
+  position: absolute;
+  top: calc(50% - 21px);
+  transform: translateY(-50%);
   background: var(--tag-bg);
   border: 1px solid var(--border);
   color: var(--text2);
@@ -981,7 +1320,12 @@ i[data-lucide] {
   justify-content: center;
   transition: all 0.2s;
   flex-shrink: 0;
+  pointer-events: auto;
 }
+
+.carousel-prev { left: 12px; }
+
+.carousel-next { right: 12px; }
 
 .carousel-btn:hover {
   border-color: var(--border-hover);
@@ -989,12 +1333,22 @@ i[data-lucide] {
   background: var(--card-hover);
 }
 
+.carousel-btn:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
 .carousel-btn svg { width: 15px; height: 15px; stroke-width: 1.5; }
 
 .carousel-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
   display: flex;
   gap: 8px;
   align-items: center;
+  pointer-events: auto;
 }
 
 .carousel-dot {
@@ -1053,16 +1407,12 @@ i[data-lucide] {
 }
 
 .contact-headline {
-  font-family: 'Syne', sans-serif;
-  font-size: clamp(36px, 5vw, 64px);
-  font-weight: 800;
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 700;
   line-height: 1.05;
-  letter-spacing: -0.03em;
-}
-
-.contact-headline .outline {
-  color: transparent;
-  -webkit-text-stroke: 1.5px var(--text3);
+  letter-spacing: 0;
+  color: var(--text);
 }
 
 .contact-links {
@@ -1235,8 +1585,18 @@ footer {
 }
 
 @keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(1); }
-  50% { opacity: 1; transform: scaleY(1.2); }
+  0%, 100% { opacity: 0.35; transform: translateX(-50%) scaleY(1); }
+  50% { opacity: 1; transform: translateX(-50%) scaleY(1.25); }
+}
+
+@keyframes scrollFloat {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-6px); }
+}
+
+@keyframes chevronBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
 }
 
 @keyframes pulse-dot {
@@ -1258,6 +1618,46 @@ footer {
 @media (max-width: 768px) {
   nav { padding: 0 24px; }
   .nav-links { display: none; }
+  .theme-toggle { right: 24px; }
+  .hero-content {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 24px;
+    text-align: center;
+  }
+  .hero-avatar-wrap {
+    width: 152px;
+    height: 152px;
+  }
+  .hero-copy { text-align: center; }
+  .hero-name { font-size: 44px; }
+  .hero-sub {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .hero-socials { justify-content: center; }
+  .project-card {
+    min-height: auto;
+    padding: 32px;
+  }
+  .project-card-actions {
+    top: 24px;
+    right: 24px;
+  }
+  .carousel-slide { flex-basis: 100%; }
+  .project-preview-panel { padding: 20px; }
+  .project-preview-header {
+    display: block;
+  }
+  .project-preview-type {
+    display: block;
+    margin-top: 10px;
+  }
+  .project-preview-iframe-wrap { height: 320px; }
+  .project-gallery-btn {
+    width: 40px;
+    height: 40px;
+  }
   section { padding: 80px 24px; }
   #about .about-grid { grid-template-columns: 1fr; gap: 48px; }
   #hobbies .hobbies-grid { grid-template-columns: 1fr; }
@@ -1271,7 +1671,7 @@ footer {
 <body>
 
 <div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
-<canvas id="falling-particles-canvas" aria-hidden="true"></canvas>
+<canvas id="particle-network-canvas" aria-hidden="true"></canvas>
 
 <!-- NAV -->
 <nav>
@@ -1281,26 +1681,47 @@ footer {
     <li><a href="#hobbies">Hobbies</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"></button>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+    <i class="theme-icon-moon" data-lucide="moon"></i>
+    <i class="theme-icon-sun" data-lucide="sun"></i>
+  </button>
 </nav>
 
 <!-- HERO -->
 <section id="hero">
-  <canvas id="sphere-canvas"></canvas>
   <div class="hero-content">
-    <p class="hero-intro">Hi, I'm</p>
-    <h1 class="hero-name">
-      <span class="first">Ulyssies</span>
-      <span class="last">Adams</span>
-    </h1>
-    <p class="hero-sub">
-      <span class="hero-highlight">Software Engineer</span><span class="hero-sep">  ·  </span><span class="hero-highlight">Atlanta, GA</span>
-    </p>
+    <div class="hero-avatar-wrap">
+      <img class="hero-avatar" src="attachments/ulyssies-profile.png" alt="Portrait of Ulyssies Adams">
+    </div>
+    <div class="hero-copy">
+      <p class="hero-intro">Hi, I'm</p>
+      <h1 class="hero-name">
+        <span class="first">Ulyssies</span>
+        <span class="middle">Z.</span>
+        <span class="last">Adams</span>
+      </h1>
+      <p class="hero-sub">
+        <span class="hero-highlight">Data</span><span class="hero-sep">  /  </span><span class="hero-highlight">MS Computational Analytics</span><span class="hero-sep">  /  </span><span class="hero-highlight">Software</span><span class="hero-sep">  /  </span><span class="hero-highlight">BS Computer Science</span>
+      </p>
+      <div class="hero-socials" aria-label="Social links">
+        <a class="hero-social-link" href="https://github.com/ulyssies" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18A11.07 11.07 0 0 1 12 5.53c.98.01 1.96.13 2.88.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.07.78 2.16v3.2c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/>
+          </svg>
+        </a>
+        <a class="hero-social-link" href="https://linkedin.com/in/ulyssiesadams" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.32 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.1 20.45H3.54V9H7.1v11.45ZM22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0Z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
   </div>
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
-  </div>
+  <a class="hero-scroll" href="#about" aria-label="Scroll to about section">
+    <span>Scroll Down</span>
+    <i data-lucide="chevron-down"></i>
+    <div class="scroll-line" aria-hidden="true"></div>
+  </a>
 </section>
 
 <!-- ABOUT -->
@@ -1310,11 +1731,15 @@ footer {
   <div class="about-grid">
     <div class="reveal">
       <h2 class="about-headline">
-        CS grad.<br>
-        <em>Analytics.</em><br>
+        Data.<br>
+        <em>Software.</em><br>
         builder.
       </h2>
       <div class="stack-list">
+        <span class="tag">Data</span>
+        <span class="tag">MS Computational Analytics</span>
+        <span class="tag">Software</span>
+        <span class="tag">BS Computer Science</span>
         <span class="tag">Python</span>
         <span class="tag">SQL</span>
         <span class="tag">TypeScript</span>
@@ -1335,7 +1760,7 @@ footer {
     </div>
     <div class="about-body reveal" style="transition-delay:0.15s">
       <p>I like to build things. Agentic AI tools, data pipelines, full-stack apps — I enjoy taking problems I run into day to day and turning them into something useful. There's always something new to build and something new to learn.</p>
-      <p>MS Analytics candidate at Georgia Tech and CS graduate from Georgia State, Cum Laude. Currently working in data operations at Shiplify — producing ground truth labels for an active learning pipeline and performing geospatial QA as a senior-tier reviewer on a platform processing 500M+ shipments. Previously an AI Evaluator at OutlierAI, rating LLM outputs for alignment and authoring gold-standard responses for RLHF pipelines.</p>
+      <p>MS Computational Analytics candidate at Georgia Tech and BS Computer Science graduate from Georgia State, Cum Laude. Currently working in data operations at Shiplify — producing ground truth labels for an active learning pipeline and performing geospatial QA as a senior-tier reviewer on a platform processing 500M+ shipments. Previously an AI Evaluator at OutlierAI, rating LLM outputs for alignment and authoring gold-standard responses for RLHF pipelines.</p>
       <p>Recent work includes an autonomous job matching agent, an AI news podcast generator, and a Telegram nutrition tracker powered by Claude Vision — all live, all built solo. Looking for the next idea to turn into an app or service.</p>
     </div>
   </div>
@@ -1346,113 +1771,145 @@ footer {
 <section id="projects">
   <p class="section-label reveal">01 — Work</p>
 
-  <!-- 001 Featured -->
-  <div class="project-featured reveal">
-    <div class="project-card project-toggle" role="button" tabindex="0" aria-expanded="false" data-project-preview="001" data-preview-type="iframe" data-preview-url="https://ai-news-podcast-generation.vercel.app">
-      <div class="project-status">
-        <span class="status-dot"></span>
-        Live · In development
-      </div>
-      <p class="project-num">001</p>
-      <h3 class="project-title">AI News Podcast Generator</h3>
-      <p class="project-desc">Full-stack app that generates short AI-powered news podcasts: retrieves current articles from Google News RSS or NewsAPI, transforms them into structured scripts with the OpenAI API, and produces audio via OpenAI text-to-speech. Modular FastAPI + httpx backend for article retrieval and AI processing; Next.js/React frontend for topic selection and playback. Built for the morning commute.</p>
-      <div class="project-tags">
-        <span class="tag">Python</span>
-        <span class="tag">FastAPI</span>
-        <span class="tag">OpenAI API</span>
-        <span class="tag">Next.js</span>
-        <span class="tag">React</span>
-        <span class="tag">TypeScript</span>
-      </div>
-      <span class="project-arrow"><i data-lucide="arrow-up-right"></i></span>
+  <div class="project-showcase reveal">
+    <div class="project-carousel" data-project-carousel>
+      <div class="carousel-viewport">
+        <div class="carousel-track">
 
-      <div class="project-drawer" aria-hidden="true">
-        <div class="project-preview-iframe-wrap">
-          <span class="project-preview-hint">Preview</span>
-          <div class="project-preview-spinner" aria-hidden="true"></div>
-          <div class="project-preview-error" aria-live="polite">Preview unavailable — site blocks embedding</div>
-          <iframe class="project-preview-iframe" loading="lazy" title="AI News Podcast Generator preview"></iframe>
+          <!-- 001 AI News Podcast Generator -->
+          <div class="carousel-slide">
+            <div class="project-card project-select" role="button" tabindex="0" aria-expanded="false" data-project-preview="ai-news" data-preview-type="iframe" data-preview-url="https://ai-news-podcast-generation.vercel.app" data-preview-title="AI News Podcast Generator" data-preview-label="Live preview" data-preview-cta-label="Open live site">
+              <div class="project-status">
+                <span class="status-dot"></span>
+                Live · In development
+              </div>
+              <p class="project-num">001</p>
+              <h3 class="project-title">AI News Podcast Generator</h3>
+              <p class="project-desc">Full-stack app that generates short AI-powered news podcasts: retrieves current articles from Google News RSS or NewsAPI, transforms them into structured scripts with the OpenAI API, and produces audio via OpenAI text-to-speech. Modular FastAPI + httpx backend for article retrieval and AI processing; Next.js/React frontend for topic selection and playback. Built for the morning commute.</p>
+              <div class="project-tags">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">OpenAI API</span>
+                <span class="tag">Next.js</span>
+                <span class="tag">React</span>
+                <span class="tag">TypeScript</span>
+              </div>
+              <div class="project-card-hint">
+                <i data-lucide="mouse-pointer-click"></i>
+                Click for live preview
+              </div>
+              <div class="project-card-actions">
+                <span class="project-arrow"><i data-lucide="arrow-up-right"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 002 Spotify Data Pipeline -->
+          <div class="carousel-slide">
+            <div class="project-card project-select" role="button" tabindex="0" aria-expanded="false" data-project-preview="spotify" data-preview-type="gallery" data-preview-url="https://github.com/ulyssies/spotify_sql_project" data-preview-title="Spotify Data Pipeline" data-preview-label="Screenshot gallery" data-preview-cta-label="Open GitHub repo">
+              <div class="project-status">
+                <span class="status-dot"></span>
+                Approval pending
+              </div>
+              <p class="project-num">002</p>
+              <h3 class="project-title">Spotify Data Pipeline</h3>
+              <p class="project-desc">Full-stack music intelligence project that turns Spotify listening history into interactive dashboards and a taste graph. FastAPI backend with Spotify OAuth, Supabase/Postgres persistence, genre enrichment, and a Next.js frontend for listening history, top tracks, top artists, genres, import workflows, and the Music Map. Live website is waiting on Spotify approval before it can go public.</p>
+              <div class="project-tags">
+                <span class="tag">Python</span>
+                <span class="tag">FastAPI</span>
+                <span class="tag">Next.js</span>
+                <span class="tag">Spotify API</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">D3</span>
+              </div>
+              <div class="project-card-hint">
+                <i data-lucide="mouse-pointer-click"></i>
+                Click for screenshots
+              </div>
+              <div class="project-card-actions">
+                <span class="project-arrow"><i data-lucide="arrow-up-right"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 003 Job Match Agent -->
+          <div class="carousel-slide">
+            <div class="project-card project-select" role="button" tabindex="0" aria-expanded="false" data-project-preview="job-agent" data-preview-type="link" data-preview-url="https://github.com/ulyssies/job-agent" data-preview-title="Job Match Agent" data-preview-label="Repository" data-preview-cta-label="Open GitHub repo">
+              <div class="project-status">
+                <span class="status-dot"></span>
+                Live
+              </div>
+              <p class="project-num">003</p>
+              <h3 class="project-title">Job Match Agent</h3>
+              <p class="project-desc">Autonomous AI agent that searches multiple job boards daily across 6 target cities, scores each listing 0–100% against my resume using Claude AI, and estimates salaries when none are listed. Cross-run deduplication, persistent 30-day run history, live dark-mode dashboard, and automated daily email delivery.</p>
+              <div class="project-tags">
+                <span class="tag">Node.js</span>
+                <span class="tag">Claude AI</span>
+                <span class="tag">Adzuna API</span>
+                <span class="tag">Nodemailer</span>
+              </div>
+              <div class="project-card-hint project-card-hint--repo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18A11.07 11.07 0 0 1 12 5.53c.98.01 1.96.13 2.88.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.07.78 2.16v3.2c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                Click for repository
+              </div>
+              <div class="project-card-actions">
+                <span class="project-arrow"><i data-lucide="arrow-up-right"></i></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 004 Fitness Agent -->
+          <div class="carousel-slide">
+            <div class="project-card project-select" role="button" tabindex="0" aria-expanded="false" data-project-preview="fitness-agent" data-preview-type="link" data-preview-url="https://github.com/ulyssies/nutribot" data-preview-title="Fitness Agent" data-preview-label="Repository" data-preview-cta-label="Open GitHub repo">
+              <div class="project-status project-status--ghost" aria-hidden="true"><span class="status-dot"></span></div>
+              <p class="project-num">004</p>
+              <h3 class="project-title">Fitness Agent</h3>
+              <p class="project-desc">Telegram bot for fitness and nutrition tracking. Log meals by sending a photo — Claude Vision estimates calories and macros. Tracks body weight, generates weekly graphs, sends daily nudges, and answers free-text nutrition questions via a Claude-powered nutritionist persona. Multi-user architecture with per-user data isolation. Deployed on Render with Supabase for persistent storage.</p>
+              <div class="project-tags">
+                <span class="tag">Python</span>
+                <span class="tag">Anthropic API</span>
+                <span class="tag">Supabase</span>
+                <span class="tag">Telegram Bot API</span>
+                <span class="tag">Render</span>
+              </div>
+              <div class="project-card-hint project-card-hint--repo">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18A11.07 11.07 0 0 1 12 5.53c.98.01 1.96.13 2.88.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.07.78 2.16v3.2c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>
+                Click for repository
+              </div>
+              <div class="project-card-actions">
+                <span class="project-arrow"><i data-lucide="arrow-up-right"></i></span>
+              </div>
+            </div>
+          </div>
+
         </div>
-        <button type="button" class="project-preview-cta">Open live site <i data-lucide="arrow-up-right"></i></button>
+      </div>
+
+      <div class="carousel-controls">
+        <button class="carousel-btn carousel-prev" aria-label="Previous project">
+          <i data-lucide="arrow-left"></i>
+        </button>
+        <div class="carousel-dots"></div>
+        <button class="carousel-btn carousel-next" aria-label="Next project">
+          <i data-lucide="arrow-right"></i>
+        </button>
       </div>
     </div>
-  </div>
 
-  <!-- 002–004 Carousel -->
-  <div class="project-carousel reveal" style="transition-delay:0.1s">
-    <div class="carousel-viewport">
-      <div class="carousel-track">
-
-        <!-- 002 Job Match Agent -->
-        <div class="carousel-slide">
-          <a class="project-card" href="https://ulyssies.github.io/job-agent" target="_blank" rel="noopener noreferrer">
-            <div class="project-status">
-              <span class="status-dot"></span>
-              Live
-            </div>
-            <p class="project-num">002</p>
-            <h3 class="project-title">Job Match Agent</h3>
-            <p class="project-desc">Autonomous AI agent that searches multiple job boards daily across 6 target cities, scores each listing 0–100% against my resume using Claude AI, and estimates salaries when none are listed. Cross-run deduplication, persistent 30-day run history, live dark-mode dashboard, and automated daily email delivery.</p>
-            <div class="project-tags">
-              <span class="tag">Node.js</span>
-              <span class="tag">Claude AI</span>
-              <span class="tag">Adzuna API</span>
-              <span class="tag">Nodemailer</span>
-            </div>
-          </a>
-        </div>
-
-        <!-- 003 Spotify Data Pipeline -->
-        <div class="carousel-slide">
-          <a class="project-card" href="https://github.com/ulyssies/spotify_sql_project" target="_blank" rel="noopener noreferrer">
-            <div class="project-status project-status--ghost" aria-hidden="true"><span class="status-dot"></span></div>
-            <p class="project-num">003</p>
-            <h3 class="project-title">Spotify Data Pipeline</h3>
-            <p class="project-desc">Python-based ETL pipeline that extracts and transforms Spotify API data for structured storage and longitudinal analysis of listening behavior. Normalized metadata modeled and persisted in SQLite; Streamlit app with interactive visual components for exploring the data.</p>
-            <div class="project-tags">
-              <span class="tag">Python</span>
-              <span class="tag">SQLite</span>
-              <span class="tag">Spotipy</span>
-              <span class="tag">pandas</span>
-              <span class="tag">Streamlit</span>
-            </div>
-          </a>
-        </div>
-
-        <!-- 004 Fitness Agent -->
-        <div class="carousel-slide">
-          <a class="project-card" href="https://github.com/ulyssies/nutribot" target="_blank" rel="noopener noreferrer">
-            <div class="project-status project-status--ghost" aria-hidden="true"><span class="status-dot"></span></div>
-            <p class="project-num">004</p>
-            <h3 class="project-title">Fitness Agent</h3>
-            <p class="project-desc">Telegram bot for fitness and nutrition tracking. Log meals by sending a photo — Claude Vision estimates calories and macros. Tracks body weight, generates weekly graphs, sends daily nudges, and answers free-text nutrition questions via a Claude-powered nutritionist persona. Multi-user architecture with per-user data isolation. Deployed on Render with Supabase for persistent storage.</p>
-            <div class="project-tags">
-              <span class="tag">Python</span>
-              <span class="tag">Anthropic API</span>
-              <span class="tag">Supabase</span>
-              <span class="tag">Telegram Bot API</span>
-              <span class="tag">Render</span>
-            </div>
-          </a>
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Carousel controls -->
-    <div class="carousel-controls">
-      <button class="carousel-btn carousel-prev" aria-label="Previous project">
-        <i data-lucide="arrow-left"></i>
+    <div class="project-preview-panel" id="projectPreviewPanel" aria-live="polite">
+      <button class="project-preview-close" id="projectPreviewClose" type="button" aria-label="Close project preview">
+        <i data-lucide="x"></i>
       </button>
-      <div class="carousel-dots">
-        <button class="carousel-dot is-active" data-index="0" aria-label="002 & 003"></button>
-        <button class="carousel-dot" data-index="1" aria-label="003 & 004"></button>
+      <div class="project-preview-header">
+        <div>
+          <span class="project-preview-kicker">Selected project</span>
+          <h3 class="project-preview-title" id="projectPreviewTitle">AI News Podcast Generator</h3>
+        </div>
+        <span class="project-preview-type" id="projectPreviewType">Live preview</span>
       </div>
-      <button class="carousel-btn carousel-next" aria-label="Next project">
-        <i data-lucide="arrow-right"></i>
-      </button>
+      <div class="project-preview-body" id="projectPreviewBody"></div>
+      <div class="project-preview-actions" id="projectPreviewActions"></div>
     </div>
-
   </div>
 
 </section>
@@ -1539,9 +1996,7 @@ footer {
   <div class="contact-block">
     <div class="reveal">
       <h2 class="contact-headline">
-        Let's<br>
-        <span class="outline">build</span><br>
-        something.
+        Contact Me
       </h2>
     </div>
     <div class="contact-links reveal" style="transition-delay:0.1s">
@@ -1567,7 +2022,7 @@ footer {
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-text">© 2026 Ulyssies Adams</span>
+  <span class="footer-text">© 2026 Ulyssies Z. Adams</span>
   <span class="footer-text">Built from scratch</span>
 </footer>
 
@@ -1624,153 +2079,244 @@ resumeBackdrop.addEventListener('click', (e) => {
 // ── THEME TOGGLE ──────────────────────────────────────────
 const toggle = document.getElementById('themeToggle');
 const html = document.documentElement;
-toggle.addEventListener('click', () => {
-  html.dataset.theme = html.dataset.theme === 'dark' ? 'light' : 'dark';
-  initSphere();
-});
+if (!html.dataset.theme) html.dataset.theme = 'dark';
 
-// ── SPHERE ────────────────────────────────────────────────
-const canvas = document.getElementById('sphere-canvas');
+function updateThemeToggleLabel() {
+  const nextTheme = html.dataset.theme === 'light' ? 'dark' : 'light';
+  const label = `Switch to ${nextTheme} theme`;
+  toggle.setAttribute('aria-label', label);
+  toggle.setAttribute('title', label);
+}
+
+function setTheme(theme) {
+  html.dataset.theme = theme;
+  try {
+    localStorage.setItem('theme', theme);
+  } catch (error) {
+    // Theme persistence is optional when storage is blocked.
+  }
+  refreshNetworkPalette();
+  updateThemeToggleLabel();
+}
+
+toggle.addEventListener('click', () => {
+  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+updateThemeToggleLabel();
+
+// ── PARTICLE NETWORK BACKGROUND ───────────────────────────
+const canvas = document.getElementById('particle-network-canvas');
 const ctx = canvas.getContext('2d');
 
-let W, H, cx, cy, animId;
-let particles = [];
-let connections = [];
-let mouseX = 0, mouseY = 0;
-let time = 0;
+let networkW = 0;
+let networkH = 0;
+let networkDpr = 1;
+let networkPalette;
+const networkParticles = [];
+const networkMouse = { x: 0, y: 0, active: false };
 
-const CHAR_SET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>{}[]|/\\+=-_~;:.,?!@#$%^&*()'.split('');
-const N_PARTICLES = 240;
-const RADIUS = 260;
+const NETWORK_PARTICLE_COUNT = 96;
+const NETWORK_LINK_DISTANCE = 150;
+const NETWORK_MOUSE_DISTANCE = 175;
 
-function resize() {
-  W = canvas.width = canvas.offsetWidth;
-  H = canvas.height = canvas.offsetHeight;
-  cx = W / 2;
-  cy = H / 2;
+function randomBetween(min, max) {
+  return min + Math.random() * (max - min);
 }
 
-function isDark() {
-  return document.documentElement.dataset.theme !== 'light';
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
 }
 
-function sphereColor(alpha) {
-  return isDark()
-    ? `rgba(200,191,175,${alpha})`
-    : `rgba(30,25,20,${alpha})`;
-}
-
-function initSphere() {
-  particles = [];
-  const phi = Math.PI * (3 - Math.sqrt(5));
-  for (let i = 0; i < N_PARTICLES; i++) {
-    const y = 1 - (i / (N_PARTICLES - 1)) * 2;
-    const r = Math.sqrt(1 - y * y);
-    const theta = phi * i;
-    particles.push({
-      ox: Math.cos(theta) * r,
-      oy: y,
-      oz: Math.sin(theta) * r,
-      char: CHAR_SET[Math.floor(Math.random() * CHAR_SET.length)],
-      charTimer: Math.random() * 30,
-      charInterval: 6 + Math.floor(Math.random() * 35),
-      opacity: 0.55 + Math.random() * 0.45,
-    });
-  }
-}
-
-function project(x, y, z, rotX, rotY) {
-  // rotY
-  const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
-  const x1 = x * cosY + z * sinY;
-  const z1 = -x * sinY + z * cosY;
-  // rotX
-  const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
-  const y2 = y * cosX - z1 * sinX;
-  const z2 = y * sinX + z1 * cosX;
-
-  const fov = 900;
-  const scale = fov / (fov + z2 * RADIUS);
+function createNetworkParticle(x = Math.random() * networkW, y = Math.random() * networkH) {
+  const depth = randomBetween(0.58, 1.34);
+  const angle = Math.random() * Math.PI * 2;
+  const speed = randomBetween(0.07, 0.25) / depth;
   return {
-    sx: cx + x1 * RADIUS * scale,
-    sy: cy + y2 * RADIUS * scale,
-    z: z2,
-    scale,
+    x,
+    y,
+    vx: Math.cos(angle) * speed,
+    vy: Math.sin(angle) * speed,
+    radius: randomBetween(2.2, 4.8) * depth,
+    depth,
   };
 }
 
-function drawSphere() {
-  time += 0.004;
-  const rotY = time + mouseX * 0.0008;
-  const rotX = -0.25 + mouseY * 0.0005;
+function createNetworkSeedPosition(centers) {
+  if (Math.random() > 0.72) {
+    return {
+      x: Math.random() * networkW,
+      y: Math.random() * networkH,
+    };
+  }
 
-  ctx.clearRect(0, 0, W, H);
+  const center = centers[Math.floor(Math.random() * centers.length)];
+  return {
+    x: clamp(center.x + randomBetween(-145, 145), 0, networkW),
+    y: clamp(center.y + randomBetween(-125, 125), 0, networkH),
+  };
+}
 
-  // Project all
-  const proj = particles.map(p => ({
-    ...project(p.ox, p.oy, p.oz, rotX, rotY),
-    p,
+function seedNetworkParticles() {
+  const centers = Array.from({ length: 12 }, () => ({
+    x: Math.random() * networkW,
+    y: Math.random() * networkH,
   }));
 
-  // Sort by z
-  proj.sort((a, b) => a.z - b.z);
+  for (let i = 0; i < NETWORK_PARTICLE_COUNT; i++) {
+    const seed = createNetworkSeedPosition(centers);
+    networkParticles.push(createNetworkParticle(seed.x, seed.y));
+  }
+}
 
-  // Draw connections (closest pairs on front face)
-  const front = proj.filter(p => p.z > -0.2);
-  for (let i = 0; i < front.length; i++) {
-    for (let j = i + 1; j < front.length; j++) {
-      const dx = front[i].sx - front[j].sx;
-      const dy = front[i].sy - front[j].sy;
-      const dist = Math.sqrt(dx * dx + dy * dy);
-      if (dist < 70) {
-        const alpha = (1 - dist / 70) * 0.22 * (front[i].z + 1) * 0.5;
-        ctx.beginPath();
-        ctx.moveTo(front[i].sx, front[i].sy);
-        ctx.lineTo(front[j].sx, front[j].sy);
-        ctx.strokeStyle = sphereColor(alpha);
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
+function getNetworkPalette() {
+  const styles = getComputedStyle(html);
+  return {
+    bg: styles.getPropertyValue('--network-bg').trim(),
+    dot: styles.getPropertyValue('--network-dot').trim(),
+    dotRgb: styles.getPropertyValue('--network-dot-rgb').trim(),
+    lineRgb: styles.getPropertyValue('--network-line-rgb').trim(),
+    lineAlpha: Number(styles.getPropertyValue('--network-line-alpha')) || 0.3,
+  };
+}
+
+function refreshNetworkPalette() {
+  networkPalette = getNetworkPalette();
+}
+
+function resizeNetworkCanvas() {
+  const previousW = networkW || window.innerWidth;
+  const previousH = networkH || window.innerHeight;
+
+  networkW = window.innerWidth;
+  networkH = window.innerHeight;
+  networkDpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  canvas.width = Math.max(1, Math.floor(networkW * networkDpr));
+  canvas.height = Math.max(1, Math.floor(networkH * networkDpr));
+  canvas.style.width = `${networkW}px`;
+  canvas.style.height = `${networkH}px`;
+  ctx.setTransform(networkDpr, 0, 0, networkDpr, 0, 0);
+
+  if (!networkParticles.length) {
+    seedNetworkParticles();
+    return;
+  }
+
+  const xRatio = networkW / previousW;
+  const yRatio = networkH / previousH;
+  networkParticles.forEach(particle => {
+    particle.x *= xRatio;
+    particle.y *= yRatio;
+  });
+}
+
+function drawNetworkLine(x1, y1, x2, y2, distance, maxDistance, palette, depth = 1) {
+  const strength = Math.max(0, 1 - distance / maxDistance);
+  const depthStrength = clamp(depth, 0.55, 1.45);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.strokeStyle = `rgba(${palette.lineRgb},${palette.lineAlpha * Math.pow(strength, 1.15) * depthStrength})`;
+  ctx.lineWidth = 0.45 + strength * 2.4 * depthStrength;
+  ctx.stroke();
+}
+
+function moveNetworkParticles() {
+  networkParticles.forEach(particle => {
+    particle.x += particle.vx;
+    particle.y += particle.vy;
+
+    if (particle.x <= particle.radius || particle.x >= networkW - particle.radius) {
+      particle.vx *= -1;
+      particle.x = Math.max(particle.radius, Math.min(networkW - particle.radius, particle.x));
+    }
+
+    if (particle.y <= particle.radius || particle.y >= networkH - particle.radius) {
+      particle.vy *= -1;
+      particle.y = Math.max(particle.radius, Math.min(networkH - particle.radius, particle.y));
+    }
+  });
+}
+
+function drawNetwork() {
+  const palette = networkPalette;
+  ctx.fillStyle = palette.bg;
+  ctx.fillRect(0, 0, networkW, networkH);
+
+  moveNetworkParticles();
+
+  for (let i = 0; i < networkParticles.length; i++) {
+    for (let j = i + 1; j < networkParticles.length; j++) {
+      const first = networkParticles[i];
+      const second = networkParticles[j];
+      const dx = first.x - second.x;
+      const dy = first.y - second.y;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance < NETWORK_LINK_DISTANCE) {
+        drawNetworkLine(first.x, first.y, second.x, second.y, distance, NETWORK_LINK_DISTANCE, palette, (first.depth + second.depth) / 2);
       }
     }
   }
 
-  // Draw characters
-  proj.forEach(({ sx, sy, z, scale, p }) => {
-    p.charTimer++;
-    if (p.charTimer >= p.charInterval) {
-      p.char = CHAR_SET[Math.floor(Math.random() * CHAR_SET.length)];
-      p.charTimer = 0;
-    }
-    const depth = (z + 1) * 0.5;
-    const alpha = depth * p.opacity * 0.95;
-    const size = Math.max(10, 14 * scale);
-    ctx.font = `600 ${Math.floor(size)}px 'DM Mono', monospace`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    // Subtle glow so chars pop from background
-    ctx.shadowColor = sphereColor(alpha * 0.8);
-    ctx.shadowBlur = 4;
-    ctx.fillStyle = sphereColor(alpha);
-    ctx.fillText(p.char, sx, sy);
-    ctx.shadowBlur = 0;
+  if (networkMouse.active) {
+    networkParticles.forEach(particle => {
+      const dx = particle.x - networkMouse.x;
+      const dy = particle.y - networkMouse.y;
+      const distance = Math.hypot(dx, dy);
+
+      if (distance < NETWORK_MOUSE_DISTANCE) {
+        drawNetworkLine(particle.x, particle.y, networkMouse.x, networkMouse.y, distance, NETWORK_MOUSE_DISTANCE, palette, particle.depth * 1.1);
+      }
+    });
+
+    ctx.beginPath();
+    ctx.arc(networkMouse.x, networkMouse.y, 3.4, 0, Math.PI * 2);
+    ctx.fillStyle = palette.dot;
+    ctx.fill();
+  }
+
+  networkParticles.forEach(particle => {
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.radius * 1.9, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${palette.dotRgb},${0.08 * particle.depth})`;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${palette.dotRgb},${0.55 + 0.32 * particle.depth})`;
+    ctx.fill();
   });
 
-  animId = requestAnimationFrame(drawSphere);
+  requestAnimationFrame(drawNetwork);
 }
 
-// Mouse parallax
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX - window.innerWidth / 2;
-  mouseY = e.clientY - window.innerHeight / 2;
-});
+window.addEventListener('mousemove', e => {
+  networkMouse.x = e.clientX;
+  networkMouse.y = e.clientY;
+  networkMouse.active = true;
+}, { passive: true });
 
-window.addEventListener('resize', () => {
-  resize();
-});
+window.addEventListener('mouseout', e => {
+  if (!e.relatedTarget) networkMouse.active = false;
+}, { passive: true });
 
-resize();
-initSphere();
-drawSphere();
+window.addEventListener('touchmove', e => {
+  const touch = e.touches[0];
+  if (!touch) return;
+  networkMouse.x = touch.clientX;
+  networkMouse.y = touch.clientY;
+  networkMouse.active = true;
+}, { passive: true });
+
+window.addEventListener('touchend', () => {
+  networkMouse.active = false;
+}, { passive: true });
+
+window.addEventListener('resize', resizeNetworkCanvas, { passive: true });
+refreshNetworkPalette();
+resizeNetworkCanvas();
+drawNetwork();
 
 // ── READING PROGRESS BAR ───────────────────────────────────
 const readingProgressBar = document.getElementById('reading-progress');
@@ -1783,231 +2329,323 @@ function updateReadingProgress() {
 window.addEventListener('scroll', updateReadingProgress);
 updateReadingProgress();
 
-// ── FALLING PARTICLES ──────────────────────────────────────
-const fallingCanvas = document.getElementById('falling-particles-canvas');
-const fallingCtx = fallingCanvas.getContext('2d');
-
-let fpW = 0;
-let fpH = 0;
-let fpDpr = 1;
-let fpTime = 0;
-
-const FP_COUNT = 90;
-const fallingParticles = Array.from({ length: FP_COUNT }, () => ({
-  x: 0,
-  y: 0,
-  size: 0,
-  opacity: 0,
-  speed: 0,
-  phase: Math.random() * Math.PI * 2,
-}));
-
-function fpRand(min, max) {
-  return min + Math.random() * (max - min);
-}
-
-function fpResize() {
-  const rect = fallingCanvas.getBoundingClientRect();
-  fpW = rect.width;
-  fpH = rect.height;
-  fpDpr = window.devicePixelRatio || 1;
-  fallingCanvas.width = Math.max(1, Math.floor(fpW * fpDpr));
-  fallingCanvas.height = Math.max(1, Math.floor(fpH * fpDpr));
-  fallingCtx.setTransform(fpDpr, 0, 0, fpDpr, 0, 0);
-}
-
-function fpInitOnce() {
-  // Initialize positions and per-particle attributes one time
-  for (const p of fallingParticles) {
-    p.x = Math.random() * fpW;
-    p.y = Math.random() * fpH;
-    p.size = fpRand(0.6, 2.8);
-    p.speed = fpRand(0.2, 0.75);
-    // Simulate depth with opacity instead of expensive blur:
-    // smaller particles are dimmer, larger are brighter.
-    p.opacity = p.size < 1.3 ? fpRand(0.08, 0.25) : fpRand(0.35, 0.6);
-  }
-}
-
-function fpResetParticle(p) {
-  p.x = Math.random() * fpW;
-  p.y = -5;
-}
-
-function fpDraw() {
-  fpTime += 0.012;
-  fallingCtx.filter = 'none';
-  fallingCtx.clearRect(0, 0, fpW, fpH);
-
-  for (const p of fallingParticles) {
-    // subtle sine wobble ±0.15px
-    const drift = Math.sin(fpTime + p.phase) * 0.15;
-    p.y += p.speed;
-
-    if (p.y - p.size > fpH) {
-      fpResetParticle(p);
-    }
-
-    fallingCtx.beginPath();
-    fallingCtx.arc(p.x + drift, p.y, p.size, 0, Math.PI * 2);
-    fallingCtx.fillStyle = `rgba(200,191,175,${p.opacity})`;
-    fallingCtx.fill();
-  }
-
-  requestAnimationFrame(fpDraw);
-}
-
-fpResize();
-fpInitOnce();
-fpDraw();
-window.addEventListener('resize', () => {
-  fpResize(); // do not re-initialize particles
-});
-
-// ── PROJECT PREVIEW DRAWERS ───────────────────────────────
-const projectToggles = document.querySelectorAll('.project-featured .project-toggle[data-project-preview]');
-let openProjectToggle = null;
-
-function closeProjectDrawer(toggleEl) {
-  if (!toggleEl) return;
-  toggleEl.classList.remove('is-open');
-  toggleEl.setAttribute('aria-expanded', 'false');
-  const drawer = toggleEl.querySelector('.project-drawer');
-  if (drawer) drawer.setAttribute('aria-hidden', 'true');
-}
-
-function openProjectDrawer(toggleEl) {
-  if (!toggleEl) return;
-  if (openProjectToggle && openProjectToggle !== toggleEl) {
-    closeProjectDrawer(openProjectToggle);
-  }
-  openProjectToggle = toggleEl;
-  toggleEl.classList.add('is-open');
-  toggleEl.setAttribute('aria-expanded', 'true');
-  const drawer = toggleEl.querySelector('.project-drawer');
-  if (drawer) drawer.setAttribute('aria-hidden', 'false');
-
-  const iframe = toggleEl.querySelector('iframe.project-preview-iframe');
-  if (!iframe) return;
-
-  if (toggleEl.dataset.previewLoaded === 'true') return;
-  toggleEl.dataset.previewLoaded = 'true';
-
-  const spinner = toggleEl.querySelector('.project-preview-spinner');
-  const errorEl = toggleEl.querySelector('.project-preview-error');
-  const iframeWrap = toggleEl.querySelector('.project-preview-iframe-wrap');
-
-  // Prepare UI for loading
-  if (spinner) spinner.style.display = 'flex';
-  if (errorEl) errorEl.style.display = 'none';
-  if (iframeWrap) iframeWrap.style.background = 'var(--card-bg)';
-  iframe.style.display = 'block';
-
-  const url = toggleEl.dataset.previewUrl;
-  let timedOut = false;
-
-  const timeoutId = setTimeout(() => {
-    timedOut = true;
-    if (spinner) spinner.style.display = 'none';
-    iframe.style.display = 'none';
-    if (errorEl) errorEl.style.display = 'flex';
-  }, 4000);
-
-  iframe.addEventListener(
-    'load',
-    () => {
-      if (timedOut) return;
-      clearTimeout(timeoutId);
-      if (spinner) spinner.style.display = 'none';
-      if (errorEl) errorEl.style.display = 'none';
+// ── PROJECT CAROUSEL + PREVIEW ────────────────────────────
+const projectGallerySlides = {
+  spotify: [
+    {
+      src: 'attachments/spotify-music-map.png',
+      alt: 'SpotYourVibe music map overview',
+      title: 'Music Map',
     },
-    { once: true }
-  );
+    {
+      src: 'attachments/spotify-music-map-detail.png',
+      alt: 'SpotYourVibe music map detail panel',
+      title: 'Music Map Detail',
+    },
+    {
+      src: 'attachments/spotify-listening-history.png',
+      alt: 'SpotYourVibe listening history dashboard',
+      title: 'Listening History',
+    },
+    {
+      src: 'attachments/spotify-top-tracks.png',
+      alt: 'SpotYourVibe top tracks dashboard',
+      title: 'Top Tracks',
+    },
+    {
+      src: 'attachments/spotify-top-artists.png',
+      alt: 'SpotYourVibe top artists dashboard',
+      title: 'Top Artists',
+    },
+    {
+      src: 'attachments/spotify-genres.png',
+      alt: 'SpotYourVibe genres dashboard',
+      title: 'Genres',
+    },
+  ],
+};
 
-  // Lazy-load only when first opened
-  iframe.src = url;
+const projectCards = Array.from(document.querySelectorAll('.project-select[data-project-preview]'));
+const projectPreviewPanel = document.getElementById('projectPreviewPanel');
+const projectPreviewTitle = document.getElementById('projectPreviewTitle');
+const projectPreviewType = document.getElementById('projectPreviewType');
+const projectPreviewBody = document.getElementById('projectPreviewBody');
+const projectPreviewActions = document.getElementById('projectPreviewActions');
+const projectPreviewClose = document.getElementById('projectPreviewClose');
+const projectGalleryState = { spotify: 0 };
+let openProjectCard = null;
+
+function githubSvgMarkup() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.25.45-2.28 1.19-3.08-.12-.29-.52-1.46.11-3.04 0 0 .97-.31 3.18 1.18A11.07 11.07 0 0 1 12 5.53c.98.01 1.96.13 2.88.39 2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.23 2.75.11 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.69 5.38-5.25 5.67.42.36.78 1.07.78 2.16v3.2c0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z"/></svg>';
 }
 
-projectToggles.forEach(toggleEl => {
-  // Ensure drawer is hidden initially
-  const drawer = toggleEl.querySelector('.project-drawer');
-  if (drawer) drawer.setAttribute('aria-hidden', 'true');
+function renderProjectActions(card) {
+  const previewUrl = card.dataset.previewUrl;
+  const githubUrl = card.dataset.githubUrl;
+  const ctaLabel = card.dataset.previewCtaLabel || 'Open project';
+  const actions = [];
 
-  const toggle = () => {
-    const isOpen = toggleEl.classList.contains('is-open');
-    if (isOpen) {
-      closeProjectDrawer(toggleEl);
-      if (openProjectToggle === toggleEl) openProjectToggle = null;
-    } else {
-      openProjectDrawer(toggleEl);
-    }
+  if (previewUrl) {
+    actions.push(`<a class="project-preview-cta" href="${previewUrl}" target="_blank" rel="noopener noreferrer">${ctaLabel} <i data-lucide="arrow-up-right"></i></a>`);
+  }
+
+  if (githubUrl && githubUrl !== previewUrl) {
+    actions.push(`<a class="project-preview-cta" href="${githubUrl}" target="_blank" rel="noopener noreferrer">${githubSvgMarkup()} GitHub repo</a>`);
+  }
+
+  projectPreviewActions.innerHTML = actions.join('');
+}
+
+function updateRenderedGallery(galleryKey, direction = 0) {
+  const slides = projectGallerySlides[galleryKey] || [];
+  if (!slides.length) return;
+
+  projectGalleryState[galleryKey] = (projectGalleryState[galleryKey] + direction + slides.length) % slides.length;
+  const slide = slides[projectGalleryState[galleryKey]];
+  const image = projectPreviewBody.querySelector('.project-gallery-image');
+  const title = projectPreviewBody.querySelector('.project-gallery-title');
+  const count = projectPreviewBody.querySelector('.project-gallery-count');
+
+  if (image) {
+    image.src = slide.src;
+    image.alt = slide.alt;
+  }
+  if (title) title.textContent = slide.title;
+  if (count) count.textContent = `${projectGalleryState[galleryKey] + 1} / ${slides.length}`;
+}
+
+function renderProjectGallery(card) {
+  const galleryKey = card.dataset.projectPreview;
+  projectGalleryState[galleryKey] = 0;
+  projectPreviewBody.innerHTML = `
+    <div class="project-gallery-wrap" data-gallery-key="${galleryKey}">
+      <button type="button" class="project-gallery-btn project-gallery-prev" aria-label="Previous ${card.dataset.previewTitle} screenshot">
+        <i data-lucide="arrow-left"></i>
+      </button>
+      <img class="project-gallery-image" src="" alt="">
+      <button type="button" class="project-gallery-btn project-gallery-next" aria-label="Next ${card.dataset.previewTitle} screenshot">
+        <i data-lucide="arrow-right"></i>
+      </button>
+      <div class="project-gallery-caption">
+        <span class="project-gallery-title"></span>
+        <span class="project-gallery-count"></span>
+      </div>
+    </div>
+  `;
+
+  const bindGalleryButton = (selector, direction) => {
+    const button = projectPreviewBody.querySelector(selector);
+    if (!button) return;
+    let handledPointer = false;
+
+    button.addEventListener('pointerup', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      handledPointer = true;
+      updateRenderedGallery(galleryKey, direction);
+      setTimeout(() => { handledPointer = false; }, 0);
+    });
+
+    button.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (handledPointer) return;
+      updateRenderedGallery(galleryKey, direction);
+    });
+
+    button.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      e.stopPropagation();
+      updateRenderedGallery(galleryKey, direction);
+    });
   };
 
-  toggleEl.addEventListener('click', (e) => {
-    if (e.target.closest('.project-preview-cta')) return; // CTA should not toggle
-    if (e.target.closest('.project-preview-cta')) return;
-    e.preventDefault();
-    toggle();
+  bindGalleryButton('.project-gallery-prev', -1);
+  bindGalleryButton('.project-gallery-next', 1);
+  projectPreviewBody.querySelector('.project-gallery-wrap').addEventListener('click', (e) => {
+    const bounds = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - bounds.left;
+    if (x < bounds.width * 0.22) updateRenderedGallery(galleryKey, -1);
+    if (x > bounds.width * 0.78) updateRenderedGallery(galleryKey, 1);
+  });
+  updateRenderedGallery(galleryKey);
+}
+
+function renderProjectIframe(card) {
+  projectPreviewBody.innerHTML = `
+    <div class="project-preview-iframe-wrap">
+      <div class="project-preview-spinner" aria-hidden="true"></div>
+      <div class="project-preview-error" aria-live="polite">Preview is taking longer than usual — open the live site if it does not load.</div>
+      <iframe class="project-preview-iframe" loading="eager" title="${card.dataset.previewTitle} preview"></iframe>
+    </div>
+  `;
+
+  const iframe = projectPreviewBody.querySelector('.project-preview-iframe');
+  const spinner = projectPreviewBody.querySelector('.project-preview-spinner');
+  const errorEl = projectPreviewBody.querySelector('.project-preview-error');
+  let hasLoaded = false;
+
+  const timeoutId = setTimeout(() => {
+    if (hasLoaded) return;
+    if (spinner) spinner.style.display = 'none';
+    if (errorEl) errorEl.style.display = 'flex';
+  }, 12000);
+
+  iframe.addEventListener('load', () => {
+    hasLoaded = true;
+    clearTimeout(timeoutId);
+    if (spinner) spinner.style.display = 'none';
+    if (errorEl) errorEl.style.display = 'none';
+    iframe.classList.add('is-loaded');
+  }, { once: true });
+
+  iframe.src = card.dataset.previewUrl;
+}
+
+function renderProjectLinkPreview(card) {
+  projectPreviewBody.innerHTML = `
+    <div class="project-preview-empty">
+      <div>
+        ${githubSvgMarkup()}
+        <strong>${card.dataset.previewLabel}</strong>
+        <p>${card.dataset.previewTitle} opens directly to its GitHub repository.</p>
+      </div>
+    </div>
+  `;
+}
+
+function closeProjectPreview() {
+  openProjectCard = null;
+  projectCards.forEach(projectCard => {
+    projectCard.classList.remove('is-selected');
+    projectCard.setAttribute('aria-expanded', 'false');
+  });
+  projectPreviewPanel.classList.remove('is-open');
+  projectPreviewTitle.textContent = '';
+  projectPreviewType.textContent = '';
+  projectPreviewBody.innerHTML = '';
+  projectPreviewActions.innerHTML = '';
+}
+
+function selectProjectCard(card, shouldScroll = false) {
+  openProjectCard = card;
+  projectCards.forEach(projectCard => {
+    const isSelected = projectCard === card;
+    projectCard.classList.toggle('is-selected', isSelected);
+    projectCard.setAttribute('aria-expanded', String(isSelected));
   });
 
-  toggleEl.addEventListener('keydown', (e) => {
+  projectPreviewPanel.classList.add('is-open');
+  projectPreviewTitle.textContent = card.dataset.previewTitle;
+  projectPreviewType.textContent = card.dataset.previewLabel;
+
+  if (card.dataset.previewType === 'gallery') {
+    renderProjectGallery(card);
+  } else if (card.dataset.previewType === 'iframe') {
+    renderProjectIframe(card);
+  } else {
+    renderProjectLinkPreview(card);
+  }
+
+  renderProjectActions(card);
+
+  if (window.lucide && typeof window.lucide.createIcons === 'function') {
+    window.lucide.createIcons();
+  }
+
+  if (shouldScroll) {
+    projectPreviewPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+projectCards.forEach(card => {
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('a')) return;
+    if (openProjectCard === card && projectPreviewPanel.classList.contains('is-open')) {
+      closeProjectPreview();
+      return;
+    }
+    selectProjectCard(card, true);
+  });
+
+  card.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      toggle();
+      if (openProjectCard === card && projectPreviewPanel.classList.contains('is-open')) {
+        closeProjectPreview();
+        return;
+      }
+      selectProjectCard(card, true);
     }
   });
 });
 
-// CTA buttons open the live site without toggling drawers (featured card only)
-document.querySelectorAll('.project-featured .project-preview-cta').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const toggleEl = btn.closest('.project-toggle');
-    const url = toggleEl ? toggleEl.dataset.previewUrl : null;
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
-  });
-});
+if (projectPreviewClose) {
+  projectPreviewClose.addEventListener('click', closeProjectPreview);
+}
 
-// ── PROJECT CAROUSEL ──────────────────────────────────────
 (function () {
   const track = document.querySelector('.carousel-track');
-  const slides = document.querySelectorAll('.carousel-slide');
-  const dots = document.querySelectorAll('.carousel-dot');
+  const slides = Array.from(document.querySelectorAll('.carousel-slide'));
+  const dotsContainer = document.querySelector('.carousel-dots');
   const prevBtn = document.querySelector('.carousel-prev');
   const nextBtn = document.querySelector('.carousel-next');
-  if (!track || !slides.length) return;
+  if (!track || !slides.length || !dotsContainer || !prevBtn || !nextBtn) return;
 
-  // 2-up layout: 3 slides, 2 visible at once → 2 positions (0 and 1)
-  const positions = slides.length - 1; // 2
   let current = 0;
+  let touchStartX = 0;
 
-  function getSlideWidth() {
-    return slides[0].getBoundingClientRect().width;
+  function getVisibleSlideCount() {
+    return window.matchMedia('(max-width: 768px)').matches ? 1 : 2;
+  }
+
+  function getPositionCount() {
+    return Math.max(1, slides.length - getVisibleSlideCount() + 1);
+  }
+
+  function getSlideOffset() {
+    return slides[0].getBoundingClientRect().width + 2;
+  }
+
+  function renderDots() {
+    const dotCount = getPositionCount();
+    dotsContainer.innerHTML = Array.from({ length: dotCount }, (_, index) =>
+      `<button class="carousel-dot" data-index="${index}" aria-label="Show project set ${index + 1}"></button>`
+    ).join('');
+    dotsContainer.querySelectorAll('.carousel-dot').forEach(dot => {
+      dot.addEventListener('click', () => goTo(Number(dot.dataset.index)));
+    });
   }
 
   function goTo(index) {
-    current = Math.max(0, Math.min(index, positions - 1));
-    const offset = current * (getSlideWidth() + 2); // +2 for gap
-    track.style.transform = `translateX(-${offset}px)`;
-    dots.forEach((dot, i) => dot.classList.toggle('is-active', i === current));
+    const maxIndex = getPositionCount() - 1;
+    current = Math.max(0, Math.min(index, maxIndex));
+    track.style.transform = `translateX(-${current * getSlideOffset()}px)`;
+
+    dotsContainer.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+      dot.classList.toggle('is-active', i === current);
+    });
+
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === maxIndex;
   }
 
   prevBtn.addEventListener('click', () => goTo(current - 1));
   nextBtn.addEventListener('click', () => goTo(current + 1));
-  dots.forEach(dot => {
-    dot.addEventListener('click', () => goTo(Number(dot.dataset.index)));
-  });
+  window.addEventListener('resize', () => {
+    renderDots();
+    goTo(current);
+  }, { passive: true });
 
-  // Recalculate on resize so pixel offsets stay accurate
-  window.addEventListener('resize', () => goTo(current), { passive: true });
-
-  // Swipe support
-  let touchStartX = 0;
   track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
   track.addEventListener('touchend', e => {
     const diff = touchStartX - e.changedTouches[0].clientX;
     if (Math.abs(diff) > 50) goTo(diff > 0 ? current + 1 : current - 1);
   }, { passive: true });
+
+  renderDots();
+  goTo(0);
 })();
 
 // ── SCROLL REVEAL ─────────────────────────────────────────
