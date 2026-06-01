@@ -1253,19 +1253,11 @@ footer {
 
 .project-architecture {
   margin-top: 24px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--card-bg);
-  overflow: hidden;
+  background: transparent;
 }
 
 .project-architecture-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 18px 20px;
-  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
 }
 
 .project-architecture-kicker {
@@ -1279,29 +1271,31 @@ footer {
 }
 
 .project-architecture-title {
-  color: var(--text);
-  font-family: 'Syne', sans-serif;
-  font-size: 20px;
-  line-height: 1.2;
-}
-
-.project-architecture-source {
-  color: var(--text3);
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.project-architecture pre {
-  margin: 0;
-  padding: 20px;
-  overflow-x: auto;
   color: var(--text2);
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  line-height: 1.8;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.architecture-flow {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  background: transparent;
+}
+
+.architecture-flow--mobile {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .architecture-flow--desktop {
+    display: none;
+  }
+
+  .architecture-flow--mobile {
+    display: block;
+  }
 }
 
 .project-shot-placeholder {

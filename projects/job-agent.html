@@ -95,25 +95,47 @@
     </div>
         <div class="project-architecture">
           <div class="project-architecture-header">
-            <div>
-              <span class="project-architecture-kicker">Architecture</span>
-              <h3 class="project-architecture-title">One orchestrator, focused modules, persistent run history</h3>
-            </div>
-            <span class="project-architecture-source">From README.md</span>
+            <span class="project-architecture-kicker">ARCHITECTURE</span>
+            <p class="project-architecture-title">Resume parsing, multi-source job fetch, AI scoring, daily delivery</p>
           </div>
-          <pre><code>job-agent/
-├── config.js              # Target cities, job titles, score threshold
-├── main.js                # Master 5-step pipeline orchestrator
-├── docs/assets/           # Dashboard and CLI screenshots
-├── src/
-│   ├── parseResume.js     # Claude resume parsing
-│   ├── jobSearch.js       # Multi-source fetch + deduplication
-│   ├── scoreJobs.js       # Claude scoring, dual resume routing, salary
-│   ├── database.js        # 30-day persistent run history
-│   ├── dashboard.js       # Static HTML dashboard generation
-│   ├── emailSummary.js    # Ranked daily email report
-│   └── tailorResumes.js   # Optional tailored LaTeX resumes
-└── data/jobs.json         # Auto-generated run history for GitHub Pages</code></pre>
+          <svg class="architecture-flow architecture-flow--desktop" viewBox="0 0 940 180" role="img" aria-label="Job Agent architecture flow from resume through Claude, job fetch, AI scoring, Supabase, dashboard, and email">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:12px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="job-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node flow-accent" x="0" y="68" width="120" height="44" rx="8"/><text class="flow-text" x="60" y="90">Resume</text>
+            <rect class="flow-node" x="160" y="68" width="120" height="44" rx="8"/><text class="flow-text" x="220" y="90">Claude AI</text>
+            <rect class="flow-node" x="320" y="68" width="120" height="44" rx="8"/><text class="flow-text" x="380" y="90">Job Fetch</text>
+            <rect class="flow-node" x="480" y="68" width="120" height="44" rx="8"/><text class="flow-text" x="540" y="90">AI Scoring</text>
+            <rect class="flow-node" x="640" y="68" width="120" height="44" rx="8"/><text class="flow-text" x="700" y="90">Supabase</text>
+            <rect class="flow-node flow-accent" x="800" y="28" width="120" height="44" rx="8"/><text class="flow-text" x="860" y="50">Dashboard</text>
+            <rect class="flow-node flow-accent" x="800" y="108" width="120" height="44" rx="8"/><text class="flow-text" x="860" y="130">Email</text>
+            <line class="flow-line" x1="120" y1="90" x2="160" y2="90" marker-end="url(#job-arrow)"/><text class="flow-label" x="140" y="60">parse</text>
+            <line class="flow-line" x1="280" y1="90" x2="320" y2="90" marker-end="url(#job-arrow)"/><text class="flow-label" x="300" y="60">skills profile</text>
+            <line class="flow-line" x1="440" y1="90" x2="480" y2="90" marker-end="url(#job-arrow)"/><text class="flow-label" x="460" y="60">Adzuna + Muse + Jobicy</text>
+            <line class="flow-line" x1="600" y1="90" x2="640" y2="90" marker-end="url(#job-arrow)"/><text class="flow-label" x="620" y="60">0-100 per job</text>
+            <line class="flow-line" x1="760" y1="90" x2="800" y2="50" marker-end="url(#job-arrow)"/><text class="flow-label" x="800" y="82">ranked results</text>
+            <line class="flow-line" x1="760" y1="90" x2="800" y2="130" marker-end="url(#job-arrow)"/><text class="flow-label" x="800" y="118">daily report</text>
+          </svg>
+          <svg class="architecture-flow architecture-flow--mobile" viewBox="0 0 318 312" role="img" aria-label="Job Agent architecture flow wrapping across rows with Supabase output fork">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="job-arrow-mobile" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node flow-accent" x="0" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="40">Resume</text>
+            <rect class="flow-node" x="114" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="40">Claude AI</text>
+            <rect class="flow-node" x="228" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="273" y="40">Job Fetch</text>
+            <rect class="flow-node" x="0" y="108" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="130">AI Scoring</text>
+            <rect class="flow-node" x="114" y="108" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="130">Supabase</text>
+            <rect class="flow-node flow-accent" x="0" y="238" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="260">Dashboard</text>
+            <rect class="flow-node flow-accent" x="228" y="238" width="90" height="44" rx="8"/><text class="flow-text" x="273" y="260">Email</text>
+            <line class="flow-line" x1="90" y1="40" x2="114" y2="40" marker-end="url(#job-arrow-mobile)"/><text class="flow-label" x="102" y="12">parse</text>
+            <line class="flow-line" x1="204" y1="40" x2="228" y2="40" marker-end="url(#job-arrow-mobile)"/><text class="flow-label" x="216" y="12">skills profile</text>
+            <line class="flow-line" x1="273" y1="62" x2="45" y2="108" marker-end="url(#job-arrow-mobile)"/><text class="flow-label" x="160" y="88">Adzuna + Muse + Jobicy</text>
+            <line class="flow-line" x1="90" y1="130" x2="114" y2="130" marker-end="url(#job-arrow-mobile)"/><text class="flow-label" x="102" y="102">0-100 per job</text>
+            <line class="flow-line" x1="159" y1="152" x2="45" y2="238" marker-end="url(#job-arrow-mobile)"/><text class="flow-label" x="84" y="200">ranked results</text>
+            <line class="flow-line" x1="159" y1="152" x2="273" y2="238" marker-end="url(#job-arrow-mobile)"/><text class="flow-label" x="238" y="200">daily report</text>
+          </svg>
         </div>
         <figure class="project-shot">
           <img src="https://github.com/ulyssies/job-agent/raw/main/docs/assets/job-match-dashboard.png" alt="Job Match Agent dashboard screenshot" loading="lazy">

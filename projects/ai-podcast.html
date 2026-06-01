@@ -92,27 +92,47 @@
     </div>
         <div class="project-architecture">
           <div class="project-architecture-header">
-            <div>
-              <span class="project-architecture-kicker">Architecture</span>
-              <h3 class="project-architecture-title">Static web client, FastAPI pipeline, streaming audio path</h3>
-            </div>
-            <span class="project-architecture-source">From README.md</span>
+            <span class="project-architecture-kicker">ARCHITECTURE</span>
+            <p class="project-architecture-title">Static web client, FastAPI pipeline, streaming audio path</p>
           </div>
-          <pre><code>PodcastApp/
-├── api/
-│   ├── main.py              # FastAPI app, CORS, rate-limit handler
-│   ├── routes.py            # /generate, /generate/stream, /trending-topics
-│   └── services/
-│       ├── news.py          # NewsAPI/RSS fetch, full briefing dedupe
-│       ├── script.py        # Claude briefing prompts
-│       ├── tts.py           # OpenAI TTS chunking
-│       ├── pipeline.py      # SSE progress + source/audio chunk streaming
-│       └── trending.py      # RSS topic discovery
-└── web/
-    ├── pages/index.tsx      # Generation flow + SSE parsing
-    ├── components/          # Player dock, hero, category grid, transcript
-    ├── hooks/useAudioPlayer.ts
-    └── lib/apiClient.ts</code></pre>
+          <svg class="architecture-flow architecture-flow--desktop" viewBox="0 0 1080 120" role="img" aria-label="AI podcast architecture flow from user request through FastAPI, news, script, TTS, pipeline, and Next.js player">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:12px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="ai-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node flow-accent" x="0" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="60" y="60">User</text>
+            <rect class="flow-node" x="160" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="220" y="60">FastAPI</text>
+            <rect class="flow-node" x="320" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="380" y="60">news.py</text>
+            <rect class="flow-node" x="480" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="540" y="60">script.py</text>
+            <rect class="flow-node" x="640" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="700" y="60">tts.py</text>
+            <rect class="flow-node" x="800" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="860" y="60">pipeline.py</text>
+            <rect class="flow-node flow-accent" x="960" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="1020" y="60">Next.js Player</text>
+            <line class="flow-line" x1="120" y1="60" x2="160" y2="60" marker-end="url(#ai-arrow)"/><text class="flow-label" x="140" y="30">topic + length</text>
+            <line class="flow-line" x1="280" y1="60" x2="320" y2="60" marker-end="url(#ai-arrow)"/>
+            <line class="flow-line" x1="440" y1="60" x2="480" y2="60" marker-end="url(#ai-arrow)"/><text class="flow-label" x="460" y="30">24-40 articles</text>
+            <line class="flow-line" x1="600" y1="60" x2="640" y2="60" marker-end="url(#ai-arrow)"/><text class="flow-label" x="620" y="30">briefing script</text>
+            <line class="flow-line" x1="760" y1="60" x2="800" y2="60" marker-end="url(#ai-arrow)"/><text class="flow-label" x="780" y="30">audio chunks</text>
+            <line class="flow-line" x1="920" y1="60" x2="960" y2="60" marker-end="url(#ai-arrow)"/><text class="flow-label" x="940" y="30">SSE stream</text>
+          </svg>
+          <svg class="architecture-flow architecture-flow--mobile" viewBox="0 0 318 292" role="img" aria-label="AI podcast architecture flow wrapping across rows">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="ai-arrow-mobile" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node flow-accent" x="0" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="40">User</text>
+            <rect class="flow-node" x="114" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="40">FastAPI</text>
+            <rect class="flow-node" x="228" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="273" y="40">news.py</text>
+            <rect class="flow-node" x="0" y="108" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="130">script.py</text>
+            <rect class="flow-node" x="114" y="108" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="130">tts.py</text>
+            <rect class="flow-node" x="228" y="108" width="90" height="44" rx="8"/><text class="flow-text" x="273" y="130">pipeline.py</text>
+            <rect class="flow-node flow-accent" x="114" y="218" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="240">Next.js</text>
+            <line class="flow-line" x1="90" y1="40" x2="114" y2="40" marker-end="url(#ai-arrow-mobile)"/><text class="flow-label" x="102" y="12">topic + length</text>
+            <line class="flow-line" x1="204" y1="40" x2="228" y2="40" marker-end="url(#ai-arrow-mobile)"/>
+            <line class="flow-line" x1="273" y1="62" x2="45" y2="108" marker-end="url(#ai-arrow-mobile)"/><text class="flow-label" x="160" y="88">24-40 articles</text>
+            <line class="flow-line" x1="90" y1="130" x2="114" y2="130" marker-end="url(#ai-arrow-mobile)"/><text class="flow-label" x="102" y="102">briefing script</text>
+            <line class="flow-line" x1="204" y1="130" x2="228" y2="130" marker-end="url(#ai-arrow-mobile)"/><text class="flow-label" x="216" y="102">audio chunks</text>
+            <line class="flow-line" x1="273" y1="152" x2="159" y2="218" marker-end="url(#ai-arrow-mobile)"/><text class="flow-label" x="238" y="198">SSE stream</text>
+          </svg>
         </div>
         <div class="project-live-view project-live-view--dark">
           <iframe src="https://ai-news-podcast-generation.vercel.app" title="Live AI News Podcast Generator app" loading="eager"></iframe>

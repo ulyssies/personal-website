@@ -96,28 +96,43 @@
     </div>
         <div class="project-architecture">
           <div class="project-architecture-header">
-            <div>
-              <span class="project-architecture-kicker">Architecture</span>
-              <h3 class="project-architecture-title">Telegram entrypoint, user-scoped database layer, scheduled reports</h3>
-            </div>
-            <span class="project-architecture-source">From README.md</span>
+            <span class="project-architecture-kicker">ARCHITECTURE</span>
+            <p class="project-architecture-title">Telegram intake, Claude Vision analysis, Supabase logging, scheduled delivery</p>
           </div>
-          <pre><code>Fitness Agent/
-├── bot.py                 # Entry: DB init, handlers, JobQueue, polling
-├── db/
-│   ├── schema.py          # Supabase client + DDL reference
-│   └── queries.py         # User-scoped database access
-├── handlers/
-│   ├── meal.py            # Photo -> Vision -> confirm -> insert
-│   ├── log_manual.py      # /log fallback entry
-│   ├── weight.py          # Weight commands
-│   ├── goals.py           # /setgoal conversation
-│   ├── report.py          # /report and /stats
-│   ├── reminders.py       # Reminder toggles
-│   └── nutritionist.py    # Free text -> Claude + user context
-├── graphs/charts.py       # Dark chart PNGs + insight captions
-├── scheduler/jobs.py      # Weekly charts + daily nudges
-└── utils/parser.py        # Claude Vision meal analysis</code></pre>
+          <svg class="architecture-flow architecture-flow--desktop" viewBox="0 0 920 120" role="img" aria-label="NutriBot architecture flow from meal photo through Claude Vision, confirmation, Supabase, stats, and weekly charts">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:12px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="nutri-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node flow-accent" x="0" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="60" y="60">Meal Photo</text>
+            <rect class="flow-node" x="160" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="220" y="60">Claude Vision</text>
+            <rect class="flow-node" x="320" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="380" y="60">Confirm Flow</text>
+            <rect class="flow-node" x="480" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="540" y="60">Supabase</text>
+            <rect class="flow-node" x="640" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="700" y="60">Stats + Reports</text>
+            <rect class="flow-node flow-accent" x="800" y="38" width="120" height="44" rx="8"/><text class="flow-text" x="860" y="60">Weekly Charts</text>
+            <line class="flow-line" x1="120" y1="60" x2="160" y2="60" marker-end="url(#nutri-arrow)"/><text class="flow-label" x="140" y="30">Telegram</text>
+            <line class="flow-line" x1="280" y1="60" x2="320" y2="60" marker-end="url(#nutri-arrow)"/><text class="flow-label" x="300" y="30">macro estimate</text>
+            <line class="flow-line" x1="440" y1="60" x2="480" y2="60" marker-end="url(#nutri-arrow)"/><text class="flow-label" x="460" y="30">confirmed entry</text>
+            <line class="flow-line" x1="600" y1="60" x2="640" y2="60" marker-end="url(#nutri-arrow)"/>
+            <line class="flow-line" x1="760" y1="60" x2="800" y2="60" marker-end="url(#nutri-arrow)"/><text class="flow-label" x="780" y="30">Monday push</text>
+          </svg>
+          <svg class="architecture-flow architecture-flow--mobile" viewBox="0 0 318 202" role="img" aria-label="NutriBot architecture flow wrapping across rows">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="nutri-arrow-mobile" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node flow-accent" x="0" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="40">Meal Photo</text>
+            <rect class="flow-node" x="114" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="40">Vision</text>
+            <rect class="flow-node" x="228" y="18" width="90" height="44" rx="8"/><text class="flow-text" x="273" y="40">Confirm</text>
+            <rect class="flow-node" x="0" y="128" width="90" height="44" rx="8"/><text class="flow-text" x="45" y="150">Supabase</text>
+            <rect class="flow-node" x="114" y="128" width="90" height="44" rx="8"/><text class="flow-text" x="159" y="150">Stats</text>
+            <rect class="flow-node flow-accent" x="228" y="128" width="90" height="44" rx="8"/><text class="flow-text" x="273" y="150">Charts</text>
+            <line class="flow-line" x1="90" y1="40" x2="114" y2="40" marker-end="url(#nutri-arrow-mobile)"/><text class="flow-label" x="102" y="12">Telegram</text>
+            <line class="flow-line" x1="204" y1="40" x2="228" y2="40" marker-end="url(#nutri-arrow-mobile)"/><text class="flow-label" x="216" y="12">macro estimate</text>
+            <line class="flow-line" x1="273" y1="62" x2="45" y2="128" marker-end="url(#nutri-arrow-mobile)"/><text class="flow-label" x="160" y="102">confirmed entry</text>
+            <line class="flow-line" x1="90" y1="150" x2="114" y2="150" marker-end="url(#nutri-arrow-mobile)"/>
+            <line class="flow-line" x1="204" y1="150" x2="228" y2="150" marker-end="url(#nutri-arrow-mobile)"/><text class="flow-label" x="216" y="122">Monday push</text>
+          </svg>
         </div>
         <div class="phone-screenshot-strip" aria-label="NutriBot Telegram workflow screenshots">
           <figure class="phone-screenshot">
