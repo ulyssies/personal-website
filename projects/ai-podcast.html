@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI News Podcast Generator - ulyssies</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../attachments/favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="64x64" href="../attachments/favicon-64.png?v=3">
+<link rel="apple-touch-icon" href="../attachments/favicon-180.png?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+(() => {
+  try {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+</script>
+<link rel="stylesheet" href="../css/shared.css">
+</head>
+<body>
+<div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
+<canvas id="particle-network-canvas" aria-hidden="true"></canvas>
+
+<nav class="project-detail-nav">
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#projects" aria-current="page">Projects</a></li>
+    <li><a href="../index.html#hobbies">Hobbies</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+    <i class="theme-icon-moon" data-lucide="moon"></i>
+    <i class="theme-icon-sun" data-lucide="sun"></i>
+  </button>
+</nav>
+
+<main class="project-detail-main">
+  <header class="project-detail-header reveal">
+    <div>
+      <a class="project-back-link" href="../index.html#projects">← ulyssies.com</a>
+      <p class="project-detail-number">001</p>
+      <h1 class="project-detail-title">AI News Podcast Generator</h1>
+      <p class="project-detail-tagline">A short audio news briefing on any topic, generated in seconds for the morning commute.</p>
+      <div class="project-detail-tags">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Anthropic Claude</span>
+          <span class="tag">OpenAI TTS</span>
+          <span class="tag">Next.js</span>
+          <span class="tag">React</span>
+          <span class="tag">TypeScript</span>
+      </div>
+    </div>
+    <div class="project-status"><span class="status-dot"></span>Live · In development</div>
+  </header>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">01 — Why I built this</p>
+    <p class="detail-copy">I wanted a news briefing I could actually listen to on my commute, not another feed to scroll. Everything out there was either too long, too generic, or paywalled. So I built one that generates a short audio podcast on any topic in seconds.</p>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">02 — How it works</p>
+    <div class="pipeline" style="--pipeline-steps:4">
+          <div class="pipe-step">
+            <div class="pipe-num">01</div>
+            <div class="pipe-name">Gather</div>
+            <div class="pipe-desc">Pulls 24-40 full-briefing articles from NewsAPI and Google News RSS.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">02</div>
+            <div class="pipe-name">Write</div>
+            <div class="pipe-desc">Claude turns raw articles into a tight, neutral briefing script.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">03</div>
+            <div class="pipe-name">Speak</div>
+            <div class="pipe-desc">OpenAI TTS converts the script into sentence-safe audio chunks.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">04</div>
+            <div class="pipe-name">Stream</div>
+            <div class="pipe-desc">Playback starts from the first chunk while the rest keeps loading.</div>
+          </div>
+    </div>
+        <div class="project-architecture">
+          <div class="project-architecture-header">
+            <div>
+              <span class="project-architecture-kicker">Architecture</span>
+              <h3 class="project-architecture-title">Static web client, FastAPI pipeline, streaming audio path</h3>
+            </div>
+            <span class="project-architecture-source">From README.md</span>
+          </div>
+          <pre><code>PodcastApp/
+├── api/
+│   ├── main.py              # FastAPI app, CORS, rate-limit handler
+│   ├── routes.py            # /generate, /generate/stream, /trending-topics
+│   └── services/
+│       ├── news.py          # NewsAPI/RSS fetch, full briefing dedupe
+│       ├── script.py        # Claude briefing prompts
+│       ├── tts.py           # OpenAI TTS chunking
+│       ├── pipeline.py      # SSE progress + source/audio chunk streaming
+│       └── trending.py      # RSS topic discovery
+└── web/
+    ├── pages/index.tsx      # Generation flow + SSE parsing
+    ├── components/          # Player dock, hero, category grid, transcript
+    ├── hooks/useAudioPlayer.ts
+    └── lib/apiClient.ts</code></pre>
+        </div>
+        <div class="project-live-view project-live-view--dark">
+          <iframe src="https://ai-news-podcast-generation.vercel.app" title="Live AI News Podcast Generator app" loading="eager"></iframe>
+        </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">03 — What was hard</p>
+    <ul class="decisions-list">
+        <li class="decision-item"><strong>Streaming audio chunks instead of waiting for one finished file</strong>The first version generated a single audio file and waited for the full render before playback. Switching to sentence-safe chunked streaming lets audio synthesis overlap with script generation and starts playback before the episode is finished.</li>
+        <li class="decision-item"><strong>Caching by topic and length</strong>Without caching, every click to the same topic fired a fresh API call. In-memory caching makes repeat requests return instantly and avoids burning credits on duplicate content.</li>
+        <li class="decision-item"><strong>Article volume by briefing length</strong>Full daily briefings pull from eight sections and target 24 articles for short, 32 for medium, and 40 for long before dedupe. That means the configured average full-briefing run uses 32 articles, while the 30-minute debrief targets up to 40.</li>
+    </ul>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">04 — By the numbers</p>
+    <div class="metrics-row">
+        <div class="metric"><div class="metric-val">~5s</div><div class="metric-label">to first audio chunk</div></div>
+        <div class="metric"><div class="metric-val">32</div><div class="metric-label">avg full-briefing articles</div></div>
+        <div class="metric"><div class="metric-val">40</div><div class="metric-label">30m article target</div></div>
+    </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">05 — Links</p>
+    <div class="project-links">
+        <a class="project-cta" href="https://ai-news-podcast-generation.vercel.app" target="_blank" rel="noopener noreferrer">Open live app <i data-lucide="arrow-up-right"></i></a>
+        <a class="project-cta" href="https://github.com/ulyssies/AI_News_Podcast_Generation" target="_blank" rel="noopener noreferrer">View on GitHub <i data-lucide="arrow-up-right"></i></a>
+    </div>
+  </section>
+</main>
+
+<footer class="project-detail-footer">
+  <a class="project-back-link" href="../index.html#projects">← Back to projects</a>
+  <span class="footer-text">© 2026 Ulyssies Z. Adams</span>
+</footer>
+
+<script src="../js/constellation.js"></script>
+<script>
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+if (!html.dataset.theme) html.dataset.theme = 'dark';
+
+function updateThemeToggleLabel() {
+  const nextTheme = html.dataset.theme === 'light' ? 'dark' : 'light';
+  const label = `Switch to ${nextTheme} theme`;
+  toggle.setAttribute('aria-label', label);
+  toggle.setAttribute('title', label);
+}
+
+function setTheme(theme) {
+  html.dataset.theme = theme;
+  try {
+    localStorage.setItem('theme', theme);
+  } catch (error) {
+    // Theme persistence is optional when storage is blocked.
+  }
+  if (window.refreshNetworkPalette) window.refreshNetworkPalette();
+  updateThemeToggleLabel();
+}
+
+toggle.addEventListener('click', () => {
+  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+updateThemeToggleLabel();
+
+const readingProgressBar = document.getElementById('reading-progress');
+function updateReadingProgress() {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  readingProgressBar.style.width = scrollPercent + '%';
+}
+window.addEventListener('scroll', updateReadingProgress);
+updateReadingProgress();
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+if (window.lucide && typeof window.lucide.createIcons === 'function') {
+  window.lucide.createIcons();
+}
+</script>
+</body>
+</html>

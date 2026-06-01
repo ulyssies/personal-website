@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Match Agent - ulyssies</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../attachments/favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="64x64" href="../attachments/favicon-64.png?v=3">
+<link rel="apple-touch-icon" href="../attachments/favicon-180.png?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+(() => {
+  try {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+</script>
+<link rel="stylesheet" href="../css/shared.css">
+</head>
+<body>
+<div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
+<canvas id="particle-network-canvas" aria-hidden="true"></canvas>
+
+<nav class="project-detail-nav">
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#projects" aria-current="page">Projects</a></li>
+    <li><a href="../index.html#hobbies">Hobbies</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+    <i class="theme-icon-moon" data-lucide="moon"></i>
+    <i class="theme-icon-sun" data-lucide="sun"></i>
+  </button>
+</nav>
+
+<main class="project-detail-main">
+  <header class="project-detail-header reveal">
+    <div>
+      <a class="project-back-link" href="../index.html#projects">← ulyssies.com</a>
+      <p class="project-detail-number">002</p>
+      <h1 class="project-detail-title">Job Match Agent</h1>
+      <p class="project-detail-tagline">A daily job-search agent that scores listings against my resume and sends a ranked morning report.</p>
+      <div class="project-detail-tags">
+          <span class="tag">Node.js</span>
+          <span class="tag">Claude AI</span>
+          <span class="tag">Adzuna API</span>
+          <span class="tag">Nodemailer</span>
+          <span class="tag">HTML/CSS</span>
+      </div>
+    </div>
+    <div class="project-status"><span class="status-dot"></span>Personal tool · Active</div>
+  </header>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">01 — Why I built this</p>
+    <p class="detail-copy">Job searching manually is exhausting: the same listings appear across boards, most do not match my actual skills, and there is no easy way to filter for genuinely entry-level roles. I built an agent that does the daily search for me, scores every listing against my resume using AI, and delivers a ranked report to my inbox each morning.</p>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">02 — How it works</p>
+    <div class="pipeline" style="--pipeline-steps:5">
+          <div class="pipe-step">
+            <div class="pipe-num">01</div>
+            <div class="pipe-name">Parse</div>
+            <div class="pipe-desc">Claude extracts skills and profile details from my resume.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">02</div>
+            <div class="pipe-name">Fetch</div>
+            <div class="pipe-desc">Listings come from Adzuna, The Muse, and Jobicy across target cities.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">03</div>
+            <div class="pipe-name">Score</div>
+            <div class="pipe-desc">Every job gets a 0-100% score for skill alignment and seniority fit.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">04</div>
+            <div class="pipe-name">Save</div>
+            <div class="pipe-desc">Results are written to a rolling 30-day run history.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">05</div>
+            <div class="pipe-name">Deliver</div>
+            <div class="pipe-desc">A dark-mode dashboard and ranked email report are generated each run.</div>
+          </div>
+    </div>
+        <div class="project-architecture">
+          <div class="project-architecture-header">
+            <div>
+              <span class="project-architecture-kicker">Architecture</span>
+              <h3 class="project-architecture-title">One orchestrator, focused modules, persistent run history</h3>
+            </div>
+            <span class="project-architecture-source">From README.md</span>
+          </div>
+          <pre><code>job-agent/
+├── config.js              # Target cities, job titles, score threshold
+├── main.js                # Master 5-step pipeline orchestrator
+├── docs/assets/           # Dashboard and CLI screenshots
+├── src/
+│   ├── parseResume.js     # Claude resume parsing
+│   ├── jobSearch.js       # Multi-source fetch + deduplication
+│   ├── scoreJobs.js       # Claude scoring, dual resume routing, salary
+│   ├── database.js        # 30-day persistent run history
+│   ├── dashboard.js       # Static HTML dashboard generation
+│   ├── emailSummary.js    # Ranked daily email report
+│   └── tailorResumes.js   # Optional tailored LaTeX resumes
+└── data/jobs.json         # Auto-generated run history for GitHub Pages</code></pre>
+        </div>
+        <figure class="project-shot">
+          <img src="https://github.com/ulyssies/job-agent/raw/main/docs/assets/job-match-dashboard.png" alt="Job Match Agent dashboard screenshot" loading="lazy">
+          <figcaption>Dashboard screenshot from the Job Match Agent README</figcaption>
+        </figure>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">03 — What was hard</p>
+    <ul class="decisions-list">
+        <li class="decision-item"><strong>Dual-resume routing</strong>I am applying to both Data Analyst and Software Engineering roles, which use different resumes. The agent routes each job to the right resume by title so scores compare against the relevant skill set.</li>
+        <li class="decision-item"><strong>Seniority fit as its own signal</strong>A job can match my skills and still require five years of experience. Separating entry-level fit from skill alignment let me filter for reachable roles without lowering the overall quality bar.</li>
+        <li class="decision-item"><strong>Prompt caching to control API costs</strong>The resume gets cached across scoring batches in a single run. That means I only pay to send it once, keeping a run of roughly 200 jobs around forty cents.</li>
+    </ul>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">04 — By the numbers</p>
+    <div class="metrics-row">
+        <div class="metric"><div class="metric-val">~200</div><div class="metric-label">jobs scored per run</div></div>
+        <div class="metric"><div class="metric-val">3</div><div class="metric-label">job sources</div></div>
+        <div class="metric"><div class="metric-val">~$0.40</div><div class="metric-label">per run with caching</div></div>
+    </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">05 — Links</p>
+    <div class="project-links">
+        <a class="project-cta" href="https://github.com/ulyssies/job-agent" target="_blank" rel="noopener noreferrer">View on GitHub <i data-lucide="arrow-up-right"></i></a>
+        <a class="project-cta" href="https://ulyssies.github.io/job-agent/" target="_blank" rel="noopener noreferrer">Live Dashboard <i data-lucide="arrow-up-right"></i></a>
+    </div>
+  </section>
+</main>
+
+<footer class="project-detail-footer">
+  <a class="project-back-link" href="../index.html#projects">← Back to projects</a>
+  <span class="footer-text">© 2026 Ulyssies Z. Adams</span>
+</footer>
+
+<script src="../js/constellation.js"></script>
+<script>
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+if (!html.dataset.theme) html.dataset.theme = 'dark';
+
+function updateThemeToggleLabel() {
+  const nextTheme = html.dataset.theme === 'light' ? 'dark' : 'light';
+  const label = `Switch to ${nextTheme} theme`;
+  toggle.setAttribute('aria-label', label);
+  toggle.setAttribute('title', label);
+}
+
+function setTheme(theme) {
+  html.dataset.theme = theme;
+  try {
+    localStorage.setItem('theme', theme);
+  } catch (error) {
+    // Theme persistence is optional when storage is blocked.
+  }
+  if (window.refreshNetworkPalette) window.refreshNetworkPalette();
+  updateThemeToggleLabel();
+}
+
+toggle.addEventListener('click', () => {
+  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+updateThemeToggleLabel();
+
+const readingProgressBar = document.getElementById('reading-progress');
+function updateReadingProgress() {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  readingProgressBar.style.width = scrollPercent + '%';
+}
+window.addEventListener('scroll', updateReadingProgress);
+updateReadingProgress();
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+if (window.lucide && typeof window.lucide.createIcons === 'function') {
+  window.lucide.createIcons();
+}
+</script>
+</body>
+</html>

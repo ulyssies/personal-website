@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotYourVibe - ulyssies</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../attachments/favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="64x64" href="../attachments/favicon-64.png?v=3">
+<link rel="apple-touch-icon" href="../attachments/favicon-180.png?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+(() => {
+  try {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+</script>
+<link rel="stylesheet" href="../css/shared.css">
+</head>
+<body>
+<div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
+<canvas id="particle-network-canvas" aria-hidden="true"></canvas>
+
+<nav class="project-detail-nav">
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#projects" aria-current="page">Projects</a></li>
+    <li><a href="../index.html#hobbies">Hobbies</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+    <i class="theme-icon-moon" data-lucide="moon"></i>
+    <i class="theme-icon-sun" data-lucide="sun"></i>
+  </button>
+</nav>
+
+<main class="project-detail-main">
+  <header class="project-detail-header reveal">
+    <div>
+      <a class="project-back-link" href="../index.html#projects">← ulyssies.com</a>
+      <p class="project-detail-number">003</p>
+      <h1 class="project-detail-title">SpotYourVibe</h1>
+      <p class="project-detail-tagline">An interactive map of Spotify listening history, genres, artists, and taste clusters.</p>
+      <div class="project-detail-tags">
+          <span class="tag">Python</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Next.js 14</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">D3.js</span>
+          <span class="tag">Spotify API</span>
+      </div>
+    </div>
+    <div class="project-status"><span class="status-dot"></span>Spotify approval pending</div>
+  </header>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">01 — Why I built this</p>
+    <p class="detail-copy">Spotify&#x27;s stats pages show you a top-10 list and call it done. I wanted to actually understand how my taste is structured: how genres connect, which subgenres dominate, and how my listening shifts over time. So I built a full-stack app that maps it as an interactive graph.</p>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">02 — How it works</p>
+    <div class="pipeline" style="--pipeline-steps:5">
+          <div class="pipe-step">
+            <div class="pipe-num">01</div>
+            <div class="pipe-name">Auth</div>
+            <div class="pipe-desc">Spotify OAuth connects the account and stores a JWT session.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">02</div>
+            <div class="pipe-name">Sync</div>
+            <div class="pipe-desc">Top tracks and artists are pulled into Supabase.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">03</div>
+            <div class="pipe-name">Enrich</div>
+            <div class="pipe-desc">Artist genres are enriched with Spotify and Last.fm fallback data.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">04</div>
+            <div class="pipe-name">Map</div>
+            <div class="pipe-desc">D3 renders parent genres, subgenres, and artists as connected nodes.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">05</div>
+            <div class="pipe-name">Explore</div>
+            <div class="pipe-desc">Clicking a node pins it for deeper listening-history inspection.</div>
+          </div>
+    </div>
+        <div class="project-architecture">
+          <div class="project-architecture-header">
+            <div>
+              <span class="project-architecture-kicker">Architecture</span>
+              <h3 class="project-architecture-title">FastAPI services, Supabase storage, Next.js graph interface</h3>
+            </div>
+            <span class="project-architecture-source">From README.md</span>
+          </div>
+          <pre><code>spotify_sql_project/
+├── api/
+│   ├── app/
+│   │   ├── auth/              # Spotify OAuth, refresh tokens, JWT sessions
+│   │   ├── users/             # User profile + sync metadata
+│   │   ├── tracks/            # Top track sync/read endpoints
+│   │   ├── artists/           # Top artist sync/read endpoints
+│   │   ├── genres/            # Genre distribution endpoints
+│   │   ├── map/               # Genre map + artist graph data
+│   │   ├── history/           # Streaming history stats
+│   │   ├── import_/           # Spotify JSON import
+│   │   └── recommendations/   # Discovery pipeline
+│   ├── scripts/               # Import + genre enrichment scripts
+│   └── supabase/              # Schema and RPC helpers
+├── web/
+│   ├── app/                   # Next.js 14 App Router pages
+│   ├── components/            # Dashboard, map, chart, UI components
+│   ├── hooks/                 # SWR data hooks
+│   └── lib/                   # API client, auth helpers, shared types
+└── docs/screenshots/          # README preview images</code></pre>
+        </div>
+        <div class="screenshot-carousel" data-screenshot-carousel>
+          <div class="screenshot-carousel-viewport">
+            <button class="screenshot-carousel-btn screenshot-carousel-prev" type="button" aria-label="Previous SpotYourVibe screenshot">
+              <i data-lucide="arrow-left"></i>
+            </button>
+            <img class="screenshot-carousel-image" src="https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map.png" alt="SpotYourVibe full music map page" loading="lazy">
+            <button class="screenshot-carousel-btn screenshot-carousel-next" type="button" aria-label="Next SpotYourVibe screenshot">
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+          <div class="screenshot-carousel-caption">
+            <span class="screenshot-carousel-title">Music Map Page</span>
+            <span class="screenshot-carousel-count">1 / 7</span>
+          </div>
+          <div class="screenshot-carousel-dots" aria-label="SpotYourVibe screenshot navigation"></div>
+        </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">03 — What was hard</p>
+    <ul class="decisions-list">
+        <li class="decision-item"><strong>Layered graph instead of flat stats</strong>A ranked artist list tells you who you listen to, not why your taste clusters the way it does. Putting genres in the center and artists on the outer edge makes those relationships visible at a glance.</li>
+        <li class="decision-item"><strong>Last.fm fallback for genre coverage</strong>Spotify&#x27;s genre tags are inconsistent: some artists are detailed, others are blank. Falling back to Last.fm tags for missing artists improved coverage without manual cleanup.</li>
+        <li class="decision-item"><strong>Approval-aware launch path</strong>The app is built, but the public demo has to wait on Spotify review. The project page shows screenshots and the source now, with a clear approval-pending state instead of pretending a demo is live.</li>
+    </ul>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">04 — By the numbers</p>
+    <div class="metrics-row">
+        <div class="metric"><div class="metric-val">168</div><div class="metric-label">commits</div></div>
+        <div class="metric"><div class="metric-val">Solo</div><div class="metric-label">full-stack build</div></div>
+        <div class="metric"><div class="metric-val">D3 + OAuth</div><div class="metric-label">interactive graph stack</div></div>
+    </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">05 — Links</p>
+    <div class="project-links">
+        <span class="project-approval-badge">Spotify approval pending</span>
+        <p class="project-note">A live demo will be available once Spotify reviews the app. Screenshots show the current local build.</p>
+        <a class="project-cta" href="https://github.com/ulyssies/spotify_sql_project" target="_blank" rel="noopener noreferrer">View on GitHub <i data-lucide="arrow-up-right"></i></a>
+    </div>
+  </section>
+</main>
+
+<footer class="project-detail-footer">
+  <a class="project-back-link" href="../index.html#projects">← Back to projects</a>
+  <span class="footer-text">© 2026 Ulyssies Z. Adams</span>
+</footer>
+
+<script src="../js/constellation.js"></script>
+<script>
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+if (!html.dataset.theme) html.dataset.theme = 'dark';
+
+function updateThemeToggleLabel() {
+  const nextTheme = html.dataset.theme === 'light' ? 'dark' : 'light';
+  const label = `Switch to ${nextTheme} theme`;
+  toggle.setAttribute('aria-label', label);
+  toggle.setAttribute('title', label);
+}
+
+function setTheme(theme) {
+  html.dataset.theme = theme;
+  try {
+    localStorage.setItem('theme', theme);
+  } catch (error) {
+    // Theme persistence is optional when storage is blocked.
+  }
+  if (window.refreshNetworkPalette) window.refreshNetworkPalette();
+  updateThemeToggleLabel();
+}
+
+toggle.addEventListener('click', () => {
+  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+updateThemeToggleLabel();
+
+const readingProgressBar = document.getElementById('reading-progress');
+function updateReadingProgress() {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  readingProgressBar.style.width = scrollPercent + '%';
+}
+window.addEventListener('scroll', updateReadingProgress);
+updateReadingProgress();
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+
+const spotYourVibeScreenshots = [
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map.png',
+    alt: 'SpotYourVibe full music map page',
+    title: 'Music Map Page',
+  },
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/listening-history.png',
+    alt: 'SpotYourVibe listening history dashboard',
+    title: 'Listening History',
+  },
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map-detail.png',
+    alt: 'SpotYourVibe music map page with detail panel',
+    title: 'Pinned Node Detail',
+  },
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/top-tracks.png',
+    alt: 'SpotYourVibe top tracks dashboard',
+    title: 'Top Tracks',
+  },
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/top-artists.png',
+    alt: 'SpotYourVibe top artists dashboard',
+    title: 'Top Artists',
+  },
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/genres.png',
+    alt: 'SpotYourVibe genres dashboard',
+    title: 'Genres',
+  },
+  {
+    src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/import-data.png',
+    alt: 'SpotYourVibe import data workflow',
+    title: 'Import Data',
+  },
+];
+
+(function () {
+  const carousel = document.querySelector('[data-screenshot-carousel]');
+  if (!carousel) return;
+
+  const image = carousel.querySelector('.screenshot-carousel-image');
+  const title = carousel.querySelector('.screenshot-carousel-title');
+  const count = carousel.querySelector('.screenshot-carousel-count');
+  const dotsContainer = carousel.querySelector('.screenshot-carousel-dots');
+  const prevBtn = carousel.querySelector('.screenshot-carousel-prev');
+  const nextBtn = carousel.querySelector('.screenshot-carousel-next');
+  if (!image || !title || !count || !dotsContainer || !prevBtn || !nextBtn) return;
+
+  let current = 0;
+
+  function renderScreenshot(index) {
+    current = (index + spotYourVibeScreenshots.length) % spotYourVibeScreenshots.length;
+    const screenshot = spotYourVibeScreenshots[current];
+    image.src = screenshot.src;
+    image.alt = screenshot.alt;
+    title.textContent = screenshot.title;
+    count.textContent = `${current + 1} / ${spotYourVibeScreenshots.length}`;
+    dotsContainer.querySelectorAll('.screenshot-carousel-dot').forEach((dot, dotIndex) => {
+      dot.classList.toggle('is-active', dotIndex === current);
+      dot.setAttribute('aria-current', dotIndex === current ? 'true' : 'false');
+    });
+  }
+
+  dotsContainer.innerHTML = spotYourVibeScreenshots.map((screenshot, index) =>
+    `<button class="screenshot-carousel-dot" type="button" data-index="${index}" aria-label="Show ${screenshot.title} screenshot"></button>`
+  ).join('');
+
+  dotsContainer.querySelectorAll('.screenshot-carousel-dot').forEach(dot => {
+    dot.addEventListener('click', () => renderScreenshot(Number(dot.dataset.index)));
+  });
+
+  prevBtn.addEventListener('click', () => renderScreenshot(current - 1));
+  nextBtn.addEventListener('click', () => renderScreenshot(current + 1));
+  renderScreenshot(0);
+})();
+
+if (window.lucide && typeof window.lucide.createIcons === 'function') {
+  window.lucide.createIcons();
+}
+</script>
+</body>
+</html>
