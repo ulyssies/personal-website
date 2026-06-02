@@ -1225,6 +1225,15 @@ footer {
   text-transform: uppercase;
 }
 
+.screenshot-carousel-description {
+  padding: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
 .screenshot-carousel-dots {
   display: flex;
   flex-wrap: wrap;
