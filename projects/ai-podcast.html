@@ -134,8 +134,34 @@
             <line class="flow-line" x1="273" y1="152" x2="159" y2="218" marker-end="url(#ai-arrow-mobile)"/><text class="flow-label" x="238" y="198">SSE stream</text>
           </svg>
         </div>
-        <div class="project-live-view project-live-view--dark">
-          <iframe src="https://ai-news-podcast-generation.vercel.app" title="Live AI News Podcast Generator app" loading="eager"></iframe>
+        <div class="project-live-view project-live-view--dark project-live-view--podcast" data-live-preview>
+          <div class="project-live-fallback" aria-label="AI News Podcast Generator live app preview">
+            <div class="live-preview-sidebar">
+              <span class="live-preview-kicker">Curated daily audio</span>
+              <h2>Stay informed without the noise</h2>
+              <div class="live-preview-card">
+                <div class="live-preview-card-top">
+                  <span>Today's Full Briefing</span>
+                  <span class="live-pill">Live</span>
+                </div>
+                <h3>Everything you need to know today.</h3>
+                <div class="live-wave" aria-hidden="true">
+                  <span></span><span></span><span></span><span></span><span></span><span></span>
+                </div>
+                <div class="live-lengths" aria-label="Episode length options">
+                  <span>Short ~5m</span>
+                  <span>Medium ~15m</span>
+                  <span>Long ~30m</span>
+                </div>
+                <a class="live-generate" href="https://ai-news-podcast-generation.vercel.app" target="_blank" rel="noopener noreferrer">Open live app</a>
+              </div>
+            </div>
+            <div class="live-preview-main">
+              <div class="live-preview-orb" aria-hidden="true"></div>
+              <p class="live-preview-label">Select a briefing to begin</p>
+            </div>
+          </div>
+          <iframe src="https://ai-news-podcast-generation.vercel.app" title="Live AI News Podcast Generator app" loading="eager" referrerpolicy="no-referrer-when-downgrade" data-live-preview-frame></iframe>
         </div>
   </section>
 
@@ -219,6 +245,19 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.1 });
 reveals.forEach(el => observer.observe(el));
+
+document.querySelectorAll('[data-live-preview]').forEach(preview => {
+  const frame = preview.querySelector('[data-live-preview-frame]');
+  if (!frame) return;
+
+  frame.addEventListener('load', () => {
+    preview.classList.add('is-iframe-loaded');
+  }, { once: true });
+
+  frame.addEventListener('error', () => {
+    preview.classList.remove('is-iframe-loaded');
+  });
+});
 
 if (window.lucide && typeof window.lucide.createIcons === 'function') {
   window.lucide.createIcons();
