@@ -153,6 +153,7 @@
             <span class="screenshot-carousel-title">Music Map Page</span>
             <span class="screenshot-carousel-count">1 / 7</span>
           </div>
+          <p class="screenshot-carousel-description">The Music Map page turns Spotify listening data into an interactive D3 graph, with parent genres, subgenres, and artists arranged as connected nodes so taste clusters are visible instead of flattened into a ranked list.</p>
           <div class="screenshot-carousel-dots" aria-label="SpotYourVibe screenshot navigation"></div>
         </div>
   </section>
@@ -244,36 +245,43 @@ const spotYourVibeScreenshots = [
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map.png',
     alt: 'SpotYourVibe full music map page',
     title: 'Music Map Page',
+    description: 'The Music Map page turns Spotify listening data into an interactive D3 graph, with parent genres, subgenres, and artists arranged as connected nodes so taste clusters are visible instead of flattened into a ranked list.',
   },
   {
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/listening-history.png',
     alt: 'SpotYourVibe listening history dashboard',
     title: 'Listening History',
+    description: 'The Listening History view shows how tracks, artists, and listening patterns shift over time, giving the graph a temporal layer beyond static top-track and top-artist snapshots.',
   },
   {
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map-detail.png',
     alt: 'SpotYourVibe music map page with detail panel',
     title: 'Pinned Node Detail',
+    description: 'The pinned-node detail state lets a selected genre, subgenre, or artist stay in focus while the surrounding graph remains visible, making it easier to inspect why a cluster exists.',
   },
   {
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/top-tracks.png',
     alt: 'SpotYourVibe top tracks dashboard',
     title: 'Top Tracks',
+    description: 'The Top Tracks dashboard surfaces the songs driving the listening profile, pairing familiar Spotify-style rankings with the broader map context.',
   },
   {
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/top-artists.png',
     alt: 'SpotYourVibe top artists dashboard',
     title: 'Top Artists',
+    description: 'The Top Artists page highlights the artists that shape the account profile and feeds genre enrichment so each artist can connect back into the map.',
   },
   {
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/genres.png',
     alt: 'SpotYourVibe genres dashboard',
     title: 'Genres',
+    description: 'The Genres view groups listening into genre families and subgenres, showing the vocabulary behind the graph rather than relying on a single aggregate score.',
   },
   {
     src: 'https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/import-data.png',
     alt: 'SpotYourVibe import data workflow',
     title: 'Import Data',
+    description: 'The Import Data workflow brings Spotify history into the app, then stores and enriches the listening data so the dashboard and graph can render from a durable dataset.',
   },
 ];
 
@@ -284,10 +292,11 @@ const spotYourVibeScreenshots = [
   const image = carousel.querySelector('.screenshot-carousel-image');
   const title = carousel.querySelector('.screenshot-carousel-title');
   const count = carousel.querySelector('.screenshot-carousel-count');
+  const description = carousel.querySelector('.screenshot-carousel-description');
   const dotsContainer = carousel.querySelector('.screenshot-carousel-dots');
   const prevBtn = carousel.querySelector('.screenshot-carousel-prev');
   const nextBtn = carousel.querySelector('.screenshot-carousel-next');
-  if (!image || !title || !count || !dotsContainer || !prevBtn || !nextBtn) return;
+  if (!image || !title || !count || !description || !dotsContainer || !prevBtn || !nextBtn) return;
 
   let current = 0;
 
@@ -297,6 +306,7 @@ const spotYourVibeScreenshots = [
     image.src = screenshot.src;
     image.alt = screenshot.alt;
     title.textContent = screenshot.title;
+    description.textContent = screenshot.description;
     count.textContent = `${current + 1} / ${spotYourVibeScreenshots.length}`;
     dotsContainer.querySelectorAll('.screenshot-carousel-dot').forEach((dot, dotIndex) => {
       dot.classList.toggle('is-active', dotIndex === current);
