@@ -22,7 +22,7 @@
 <link rel="icon" type="image/png" sizes="64x64" href="attachments/favicon-64.png?v=3">
 <link rel="apple-touch-icon" href="attachments/favicon-180.png?v=3">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 <script>
 (() => {
@@ -64,14 +64,15 @@
       <img class="hero-avatar" src="attachments/ulyssies-profile.png" alt="Portrait of Ulyssies Adams">
     </div>
     <div class="hero-copy">
-      <p class="hero-intro">Hi, I'm</p>
-      <h1 class="hero-name">
-        <span class="first">Ulyssies</span>
-        <span class="middle">Z.</span>
-        <span class="last">Adams</span>
-      </h1>
+      <h1 class="hero-name">Hi there, I'm Ulyssies Adams.</h1>
+      <p class="hero-typewriter" aria-live="polite">
+        <span class="hero-typewriter-text" data-typewriter>I&apos;m a tech enthusiast.</span><span class="hero-typewriter-cursor" aria-hidden="true"></span>
+      </p>
       <p class="hero-sub">
-        <span class="hero-highlight">Data</span><span class="hero-sep">  /  </span><span class="hero-highlight">MS Computational Analytics</span><span class="hero-sep">  /  </span><span class="hero-highlight">Software</span><span class="hero-sep">  /  </span><span class="hero-highlight">BS Computer Science</span>
+        <span class="hero-pill">Software</span>
+        <span class="hero-pill">Data</span>
+        <span class="hero-pill">BS Computer Science</span>
+        <span class="hero-pill">MS Computational Analytics</span>
       </p>
       <div class="hero-socials" aria-label="Social links">
         <a class="hero-social-link" href="https://github.com/ulyssies" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
@@ -161,12 +162,15 @@
         </div>
       </div>
       <div class="skill-card">
-        <p class="skill-card-label">Technologies</p>
+        <p class="skill-card-label">Technologies & Tools</p>
         <div class="skill-tags">
           <span class="tag">Supabase</span>
           <span class="tag">PostgreSQL</span>
           <span class="tag">SQLite</span>
           <span class="tag">Anthropic Claude</span>
+          <span class="tag">Claude Code</span>
+          <span class="tag">Codex</span>
+          <span class="tag">Cursor</span>
           <span class="tag">OpenAI TTS</span>
           <span class="tag">Spotify API</span>
           <span class="tag">Telegram Bot API</span>
@@ -444,6 +448,62 @@ function updateReadingProgress() {
 }
 window.addEventListener('scroll', updateReadingProgress);
 updateReadingProgress();
+
+// ── HERO TYPEWRITER ───────────────────────────────────────
+const typewriter = document.querySelector('[data-typewriter]');
+const typewriterPhrases = [
+  "I'm a tech enthusiast.",
+  "I'm a full stack engineer.",
+  "I'm a team player.",
+  "I'm a problem solver."
+];
+
+function runHeroTypewriter() {
+  if (!typewriter) return;
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) {
+    typewriter.textContent = typewriterPhrases[0];
+    return;
+  }
+
+  const fixedPrefix = "I'm a ";
+  let phraseIndex = 0;
+  let charIndex = fixedPrefix.length;
+  let deleting = false;
+
+  function tick() {
+    const phrase = typewriterPhrases[phraseIndex];
+    typewriter.textContent = phrase.slice(0, charIndex);
+
+    if (!deleting && charIndex < phrase.length) {
+      charIndex += 1;
+      window.setTimeout(tick, 70);
+      return;
+    }
+
+    if (!deleting) {
+      deleting = true;
+      window.setTimeout(tick, 1800);
+      return;
+    }
+
+    if (charIndex > fixedPrefix.length) {
+      charIndex -= 1;
+      window.setTimeout(tick, 38);
+      return;
+    }
+
+    deleting = false;
+    phraseIndex = (phraseIndex + 1) % typewriterPhrases.length;
+    charIndex = fixedPrefix.length;
+    window.setTimeout(tick, 260);
+  }
+
+  tick();
+}
+
+runHeroTypewriter();
 
 // ── SCROLL REVEAL ─────────────────────────────────────────
 const reveals = document.querySelectorAll('.reveal');
