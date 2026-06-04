@@ -221,6 +221,15 @@ window.addEventListener('scroll', updateReadingProgress);
 updateReadingProgress();
 
 const reveals = document.querySelectorAll('.reveal');
+function revealVisibleElements() {
+  reveals.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('visible');
+    }
+  });
+}
+
 const observer = new IntersectionObserver(entries => {
   entries.forEach((entry, i) => {
     if (entry.isIntersecting) {
@@ -229,6 +238,9 @@ const observer = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.1 });
 reveals.forEach(el => observer.observe(el));
+requestAnimationFrame(revealVisibleElements);
+window.addEventListener('load', revealVisibleElements);
+window.addEventListener('hashchange', () => requestAnimationFrame(revealVisibleElements));
 
 if (window.lucide && typeof window.lucide.createIcons === 'function') {
   window.lucide.createIcons();
