@@ -22,7 +22,7 @@
   }
 })();
 </script>
-<link rel="stylesheet" href="../css/shared.css">
+<link rel="stylesheet" href="../css/shared.css?v=6">
 </head>
 <body>
 <div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
@@ -140,11 +140,13 @@
           </svg>
         </div>
         <div class="screenshot-carousel" data-screenshot-carousel>
-          <div class="screenshot-carousel-viewport">
+          <div class="screenshot-carousel-stage">
             <button class="screenshot-carousel-btn screenshot-carousel-prev" type="button" aria-label="Previous SpotYourVibe screenshot">
               <i data-lucide="arrow-left"></i>
             </button>
-            <img class="screenshot-carousel-image" src="https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map.png" alt="SpotYourVibe full music map page" loading="lazy">
+            <div class="screenshot-carousel-viewport">
+              <img class="screenshot-carousel-image" src="https://github.com/ulyssies/spotify_sql_project/raw/main/docs/screenshots/pages/music-map.png" alt="SpotYourVibe full music map page" loading="lazy">
+            </div>
             <button class="screenshot-carousel-btn screenshot-carousel-next" type="button" aria-label="Next SpotYourVibe screenshot">
               <i data-lucide="arrow-right"></i>
             </button>

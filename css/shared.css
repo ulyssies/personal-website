@@ -442,6 +442,12 @@ section {
   max-width: 1240px;
 }
 
+/* Wider than the default section so the three carousel cards get more
+   horizontal room and the nav arrows can sit in the side gutters. */
+#projects {
+  max-width: 1240px;
+}
+
 .section-label {
   font-family: 'DM Mono', monospace;
   font-size: 10px;
@@ -761,7 +767,7 @@ section {
   gap: 6px;
   width: fit-content;
   margin-top: auto;
-  padding-top: 16px;
+  padding-top: 18px;
   color: var(--accent2);
   text-decoration: none;
   font-family: 'DM Mono', monospace;
@@ -1084,6 +1090,107 @@ i[data-lucide] {
   flex: 1 1 auto;
 }
 
+/* ── PROJECT CAROUSEL ─────────────────────────────────────── */
+/* Five projects no longer divide evenly into the old 2x2 grid, so the
+   showcase is a horizontal carousel: three cards visible on desktop,
+   two on tablet, one on mobile, paged by arrows/dots and native swipe. */
+.project-carousel {
+  position: relative;
+  z-index: 3;
+}
+
+.project-carousel-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  /* Vertical padding gives the card hover-lift and shadow room before the
+     clip edge; matching negative margins keep the track flush with the
+     section. Horizontal stays at 0 so the three cards sit perfectly centered. */
+  padding: 14px 0 30px;
+  margin: -14px 0 -10px;
+}
+
+.project-carousel-viewport::-webkit-scrollbar { display: none; }
+
+.project-carousel-track {
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.project-carousel-track .project-card {
+  flex: 0 0 calc((100% - 32px) / 3);
+  scroll-snap-align: start;
+}
+
+.project-carousel-btn {
+  position: absolute;
+  top: calc(50% - 26px);
+  transform: translateY(-50%);
+  z-index: 4;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--border-hover);
+  background: color-mix(in srgb, var(--bg2) 86%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.25s ease, border-color 0.25s ease, opacity 0.25s ease, transform 0.25s ease;
+}
+
+.project-carousel-btn:hover {
+  background: var(--surface);
+  border-color: var(--accent2);
+}
+
+.project-carousel-btn i,
+.project-carousel-btn svg { width: 20px; height: 20px; }
+
+/* Sit in the section's side padding so they clear the cards entirely. */
+.project-carousel-prev { left: -46px; }
+.project-carousel-next { right: -46px; }
+
+/* Keep both arrows present at the ends (dimmed) so the gutters stay
+   symmetric and the row never looks lopsided. */
+.project-carousel-btn[disabled] {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.project-carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.project-carousel-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--text3);
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.25s ease, background 0.25s ease, width 0.25s ease, border-radius 0.25s ease;
+}
+
+.project-carousel-dot:hover { opacity: 0.85; }
+
+.project-carousel-dot.is-active {
+  opacity: 1;
+  width: 22px;
+  border-radius: 5px;
+  background: var(--accent);
+}
+
 /* ── PROJECTS END ─────────────────────────────────────────── */
 
 .project-status {
@@ -1118,59 +1225,150 @@ i[data-lucide] {
 
 .contact-block {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 80px;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 72px;
   align-items: center;
+}
+
+.contact-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  margin-bottom: 28px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg3);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text2);
 }
 
 .contact-headline {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: clamp(36px, 5vw, 58px);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: 0;
+  font-size: clamp(40px, 5.4vw, 66px);
+  font-weight: 800;
+  line-height: 0.98;
+  letter-spacing: -0.03em;
   color: var(--text);
 }
+
+.contact-subtext {
+  margin-top: 20px;
+  max-width: 40ch;
+  font-size: 15px;
+  line-height: 1.65;
+  font-weight: 300;
+  color: var(--text2);
+}
+
+.contact-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 28px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg2);
+  color: var(--text2);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+.contact-copy:hover { border-color: var(--border-hover); color: var(--text); }
+.contact-copy i { width: 16px; height: 16px; }
+.contact-copy-action { display: inline-flex; color: var(--text3); transition: color 0.25s ease; }
+.contact-copy.is-copied { color: var(--text); border-color: #4ade80; }
+.contact-copy.is-copied .contact-copy-action { color: #4ade80; }
 
 .contact-links {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 10px;
 }
 
 .contact-link {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 20px 0;
-  border-bottom: 1px solid var(--border);
+  gap: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--card-bg) 88%, var(--bg3));
   text-decoration: none;
   color: var(--text2);
-  font-size: 15px;
-  transition: all 0.2s;
-  group: true;
+  overflow: hidden;
+  transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease, color 0.25s ease;
 }
 
-.contact-link:first-child { border-top: 1px solid var(--border); }
+.contact-link::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--card-hover);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+}
 
 .contact-link:hover {
+  border-color: var(--border-hover);
   color: var(--text);
-  padding-left: 8px;
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
 }
 
-.contact-link span:first-child {
+.contact-link:hover::before { opacity: 1; }
+
+.contact-link-icon {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--text);
+}
+.contact-link-icon svg { width: 19px; height: 19px; }
+
+.contact-link-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.contact-link-label {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text);
+}
+.contact-link-handle {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .contact-link-arrow {
   display: flex;
-  transition: transform 0.2s;
+  color: var(--text3);
+  transition: transform 0.25s ease, color 0.25s ease;
 }
 .contact-link-arrow svg { width: 18px; height: 18px; }
 .contact-link:hover .contact-link-arrow {
   transform: translate(4px, -4px);
+  color: var(--text);
 }
 
 /* ── FOOTER ─────────────────────────────────────────────── */
@@ -1291,6 +1489,9 @@ footer {
   }
   .project-card-content { padding: 22px; }
   .project-grid { grid-template-columns: 1fr; }
+  .project-carousel-track .project-card { flex-basis: 100%; }
+  .project-carousel-prev { left: 0; }
+  .project-carousel-next { right: 0; }
   .phone-screenshot-strip {
     grid-template-columns: repeat(3, minmax(180px, 1fr));
     overflow-x: auto;
@@ -1324,6 +1525,8 @@ footer {
   .skills-panel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .project-carousel-track .project-card { flex-basis: calc((100% - 16px) / 2); }
 }
 
 /* ── PROJECT DETAIL PAGES ────────────────────────────────── */
@@ -1769,7 +1972,13 @@ footer {
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--card-bg);
-  overflow: hidden;
+  /* No clip here — the arrows escape into the gutter; the image is
+     clipped by the viewport below instead. */
+}
+
+/* Positioning context for the arrows, sized to just the image. */
+.screenshot-carousel-stage {
+  position: relative;
 }
 
 .screenshot-carousel-viewport {
@@ -1777,6 +1986,8 @@ footer {
   aspect-ratio: 16 / 9;
   min-height: 320px;
   background: var(--bg);
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
 }
 
 .screenshot-carousel-image {
@@ -1815,9 +2026,10 @@ footer {
   color: currentColor;
 }
 
-.screenshot-carousel-prev { left: 16px; }
+/* Desktop: arrows sit outside the image in the page gutter. */
+.screenshot-carousel-prev { left: -46px; }
 
-.screenshot-carousel-next { right: 16px; }
+.screenshot-carousel-next { right: -46px; }
 
 .screenshot-carousel-caption {
   display: flex;
@@ -2039,6 +2251,10 @@ footer {
 
 @media (max-width: 768px) {
   .project-detail-main { padding: 96px 24px 72px; }
+  /* The narrow mobile gutter can't hold the arrows outside, so inset them
+     over the image (which the original design did everywhere). */
+  .screenshot-carousel-prev { left: 8px; }
+  .screenshot-carousel-next { right: 8px; }
   .project-detail-header { grid-template-columns: 1fr; gap: 24px; }
   .pipeline { grid-template-columns: repeat(var(--pipeline-steps, 4), minmax(180px, 1fr)); }
   .metrics-row { grid-template-columns: 1fr; }
