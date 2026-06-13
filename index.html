@@ -654,6 +654,7 @@ window.addEventListener('hashchange', () => requestAnimationFrame(() => {
     scrollRaf = requestAnimationFrame(() => { scrollRaf = 0; sync(); });
   });
   window.addEventListener('resize', sync);
+  window.addEventListener('load', sync);
   sync();
 })();
 
