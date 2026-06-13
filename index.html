@@ -656,6 +656,41 @@ window.addEventListener('hashchange', () => requestAnimationFrame(() => {
   window.addEventListener('resize', sync);
   sync();
 })();
+
+// ── COPY EMAIL ────────────────────────────────────────────
+(function () {
+  const btn = document.querySelector('[data-copy-email]');
+  if (!btn) return;
+  const textEl = btn.querySelector('.contact-copy-text');
+  const original = textEl ? textEl.textContent : '';
+  let resetTimer = 0;
+
+  btn.addEventListener('click', async () => {
+    const email = btn.getAttribute('data-copy-email');
+    try {
+      await navigator.clipboard.writeText(email);
+    } catch (error) {
+      // Clipboard API can be blocked (insecure context); fall back to a hidden selection.
+      const helper = document.createElement('textarea');
+      helper.value = email;
+      helper.setAttribute('readonly', '');
+      helper.style.position = 'absolute';
+      helper.style.left = '-9999px';
+      document.body.appendChild(helper);
+      helper.select();
+      try { document.execCommand('copy'); } catch (copyError) { /* nothing else to try */ }
+      document.body.removeChild(helper);
+    }
+
+    btn.classList.add('is-copied');
+    if (textEl) textEl.textContent = 'Copied to clipboard';
+    window.clearTimeout(resetTimer);
+    resetTimer = window.setTimeout(() => {
+      btn.classList.remove('is-copied');
+      if (textEl) textEl.textContent = original;
+    }, 1600);
+  });
+})();
 </script>
 <script>
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
