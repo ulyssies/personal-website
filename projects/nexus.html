@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nexus - ulyssies</title>
+<link rel="icon" type="image/png" sizes="32x32" href="../attachments/favicon-32.png?v=3">
+<link rel="icon" type="image/png" sizes="64x64" href="../attachments/favicon-64.png?v=3">
+<link rel="apple-touch-icon" href="../attachments/favicon-180.png?v=3">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>
+(() => {
+  try {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.dataset.theme = savedTheme;
+    }
+  } catch (error) {
+    document.documentElement.dataset.theme = 'dark';
+  }
+})();
+</script>
+<link rel="stylesheet" href="../css/shared.css?v=6">
+</head>
+<body>
+<div id="reading-progress" class="reading-progress-bar" aria-hidden="true"></div>
+<canvas id="particle-network-canvas" aria-hidden="true"></canvas>
+
+<nav class="project-detail-nav">
+  <ul class="nav-links">
+    <li><a href="../index.html#about">About</a></li>
+    <li><a href="../index.html#projects" aria-current="page">Projects</a></li>
+    <li><a href="../index.html#hobbies">Hobbies</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to light theme" title="Switch to light theme">
+    <i class="theme-icon-moon" data-lucide="moon"></i>
+    <i class="theme-icon-sun" data-lucide="sun"></i>
+  </button>
+</nav>
+
+<main class="project-detail-main">
+  <header class="project-detail-header reveal">
+    <div>
+      <a class="project-back-link" href="../index.html#projects">← ulyssies.com</a>
+      <p class="project-detail-number">005</p>
+      <h1 class="project-detail-title">Nexus</h1>
+      <p class="project-detail-tagline">A local-first personal AI operating system — a fleet of specialized agents that share one SQLite brain, so each one acts on what the others already know.</p>
+      <div class="project-detail-tags">
+          <span class="tag">React</span>
+          <span class="tag">Vite</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">Express</span>
+          <span class="tag">SQLite</span>
+          <span class="tag">Claude AI</span>
+          <span class="tag">node-cron</span>
+          <span class="tag">Gmail API</span>
+      </div>
+    </div>
+    <div class="project-status"><span class="status-dot"></span>Local-first · Active</div>
+  </header>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">01 — Why I built this</p>
+    <p class="detail-copy">Most AI assistants are a handful of disconnected chatbots: a job tool here, a notes app there, none of them sharing what they know. I wanted the opposite — one private system where specialized agents read and write the same memory, so work flows between them. In Nexus a single SQLite file holds my notes, goals, journal, jobs, inbox, and projects, and every agent acts on that shared context. An interview email doesn't just get flagged; it moves the matching job to "interviewing." My journal's themes quietly steer what the morning brief brings me. The shared context <em>is</em> the product. It runs entirely on my machine — filesystem and inbox access are exactly why it should stay local.</p>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">02 — How it works</p>
+    <div class="pipeline" style="--pipeline-steps:5">
+          <div class="pipe-step">
+            <div class="pipe-num">01</div>
+            <div class="pipe-name">Capture</div>
+            <div class="pipe-desc">Agents pull from Gmail (read-only), job boards, my journal, goals, and git repos.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">02</div>
+            <div class="pipe-name">Reason</div>
+            <div class="pipe-desc">One instrumented Claude client scores, classifies, tags, and summarizes.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">03</div>
+            <div class="pipe-name">Share</div>
+            <div class="pipe-desc">Everything lands in one SQLite file — the context every agent reads.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">04</div>
+            <div class="pipe-name">Act</div>
+            <div class="pipe-desc">Cross-agent writes: an email flips a job to interviewing; a deadline becomes an event.</div>
+          </div>
+          <div class="pipe-step">
+            <div class="pipe-num">05</div>
+            <div class="pipe-name">Observe</div>
+            <div class="pipe-desc">Every run and Claude call is logged with tokens and cost in a Settings panel.</div>
+          </div>
+    </div>
+        <div class="project-architecture">
+          <div class="project-architecture-header">
+            <span class="project-architecture-kicker">ARCHITECTURE</span>
+            <p class="project-architecture-title">Gmail, job boards, journal, goals, and git repos feed one shared SQLite brain that every agent reads and writes — then writes back out to job status, calendar, the knowledge graph, and the council</p>
+          </div>
+          <svg class="architecture-flow architecture-flow--desktop" viewBox="0 0 1040 260" role="img" aria-label="Nexus architecture: inputs from Gmail, job boards, journal, and git flow into one shared SQLite database that every agent reads and writes, which in turn drives job status, calendar, the second-brain graph, and the council">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:12px;text-anchor:middle;dominant-baseline:middle}.flow-sub{fill:#9a96a8;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle;dominant-baseline:middle}.flow-label{fill:#666;font-family:'DM Mono',monospace;font-size:10px;text-anchor:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="nexus-arrow" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node" x="0" y="18" width="150" height="44" rx="8"/><text class="flow-text" x="75" y="40">Gmail</text>
+            <rect class="flow-node" x="0" y="78" width="150" height="44" rx="8"/><text class="flow-text" x="75" y="100">Job boards</text>
+            <rect class="flow-node" x="0" y="138" width="150" height="44" rx="8"/><text class="flow-text" x="75" y="160">Journal · Goals</text>
+            <rect class="flow-node" x="0" y="198" width="150" height="44" rx="8"/><text class="flow-text" x="75" y="220">Git repos</text>
+            <rect class="flow-node flow-accent" x="445" y="86" width="150" height="88" rx="10"/><text class="flow-text" x="520" y="122">nexus.db</text><text class="flow-sub" x="520" y="142">shared context</text>
+            <rect class="flow-node flow-accent" x="890" y="18" width="150" height="44" rx="8"/><text class="flow-text" x="965" y="40">Job status</text>
+            <rect class="flow-node flow-accent" x="890" y="78" width="150" height="44" rx="8"/><text class="flow-text" x="965" y="100">Calendar</text>
+            <rect class="flow-node flow-accent" x="890" y="138" width="150" height="44" rx="8"/><text class="flow-text" x="965" y="160">Second brain</text>
+            <rect class="flow-node flow-accent" x="890" y="198" width="150" height="44" rx="8"/><text class="flow-text" x="965" y="220">Council</text>
+            <line class="flow-line" x1="150" y1="40" x2="445" y2="124" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="150" y1="100" x2="445" y2="126" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="150" y1="160" x2="445" y2="134" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="150" y1="220" x2="445" y2="136" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="595" y1="124" x2="890" y2="40" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="595" y1="126" x2="890" y2="100" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="595" y1="134" x2="890" y2="160" marker-end="url(#nexus-arrow)"/>
+            <line class="flow-line" x1="595" y1="136" x2="890" y2="220" marker-end="url(#nexus-arrow)"/>
+            <text class="flow-label" x="297" y="78">ingest</text>
+            <text class="flow-label" x="742" y="78">act</text>
+          </svg>
+          <svg class="architecture-flow architecture-flow--mobile" viewBox="0 0 318 300" role="img" aria-label="Nexus architecture stacked: inputs feed one shared SQLite brain that writes back out to every agent's surface">
+            <style>
+              .flow-node{fill:#1a1a1e;stroke:rgba(255,255,255,0.08);stroke-width:1}.flow-accent{fill:rgba(127,119,221,0.12);stroke:#7f77dd}.flow-text{fill:#e8e8e8;font-family:'DM Mono',monospace;font-size:11px;text-anchor:middle;dominant-baseline:middle}.flow-sub{fill:#9a96a8;font-family:'DM Mono',monospace;font-size:9px;text-anchor:middle;dominant-baseline:middle}.flow-line{stroke:rgba(255,255,255,0.2);stroke-width:1;fill:none}
+            </style>
+            <defs><marker id="nexus-arrow-mobile" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 6 3 0 6Z" fill="rgba(255,255,255,0.2)"/></marker></defs>
+            <rect class="flow-node" x="9" y="10" width="300" height="50" rx="8"/><text class="flow-text" x="159" y="35">Gmail · Jobs · Journal · Goals · Git</text>
+            <line class="flow-line" x1="159" y1="60" x2="159" y2="96" marker-end="url(#nexus-arrow-mobile)"/>
+            <rect class="flow-node flow-accent" x="9" y="98" width="300" height="64" rx="10"/><text class="flow-text" x="159" y="122">nexus.db</text><text class="flow-sub" x="159" y="142">shared context · every agent reads + writes</text>
+            <line class="flow-line" x1="159" y1="162" x2="159" y2="198" marker-end="url(#nexus-arrow-mobile)"/>
+            <rect class="flow-node flow-accent" x="9" y="200" width="300" height="50" rx="8"/><text class="flow-text" x="159" y="225">Status · Calendar · Graph · Council</text>
+          </svg>
+        </div>
+        <div class="screenshot-carousel" data-screenshot-carousel>
+          <div class="screenshot-carousel-stage">
+            <button class="screenshot-carousel-btn screenshot-carousel-prev" type="button" aria-label="Previous Nexus screenshot">
+              <i data-lucide="arrow-left"></i>
+            </button>
+            <div class="screenshot-carousel-viewport">
+              <img class="screenshot-carousel-image" src="../assets/images/nexus-home.png" alt="Nexus Home command center" loading="lazy">
+            </div>
+            <button class="screenshot-carousel-btn screenshot-carousel-next" type="button" aria-label="Next Nexus screenshot">
+              <i data-lucide="arrow-right"></i>
+            </button>
+          </div>
+          <div class="screenshot-carousel-caption">
+            <span class="screenshot-carousel-title">Home — the command center</span>
+            <span class="screenshot-carousel-count">1 / 10</span>
+          </div>
+          <p class="screenshot-carousel-description">The first screen each day: an alert strip of only time-sensitive items, today's agenda with one-click goal check-ins, the morning-brief digest, a filterable agent feed, and an agent-health row — all from one /api/home call that aggregates across every agent.</p>
+          <div class="screenshot-carousel-dots" aria-label="Nexus screenshot navigation"></div>
+        </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">03 — What was hard</p>
+    <ul class="decisions-list">
+        <li class="decision-item"><strong>Shared context as the contract</strong>Every agent reads and writes one SQLite file, so the schema is the real API. Getting the tables right — jobs, notes, goals, agent_runs — mattered more than any single agent, because that shape is what lets work flow between them.</li>
+        <li class="decision-item"><strong>Cross-agent actions without chaos</strong>The email agent writes into the job board — flipping a status to interviewing, creating an application from a confirmation email — which means agents act on each other's data. Matching companies and guarding against bad writes took careful rules.</li>
+        <li class="decision-item"><strong>Local-only and read-only by design</strong>Gmail stays gmail.readonly (never sends or deletes), filesystem reach is sandboxed to a configured project list, and nothing binds to a public interface. Privacy is the architecture, not a setting.</li>
+        <li class="decision-item"><strong>Observability for unattended agents</strong>Agents run on cron, so I instrument every run and Claude call into agent_runs / agent_usage — run history, errors, next run, and estimated spend — best-effort, so telemetry can never break an agent.</li>
+        <li class="decision-item"><strong>Graceful degradation</strong>Each agent no-ops with a clear status when its key is missing, so the app never crashes on a half-configured setup and I can enable agents one at a time.</li>
+    </ul>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">04 — By the numbers</p>
+    <div class="metrics-row">
+        <div class="metric"><div class="metric-val">9</div><div class="metric-label">specialized agents</div></div>
+        <div class="metric"><div class="metric-val">10</div><div class="metric-label">dashboard views</div></div>
+        <div class="metric"><div class="metric-val">1</div><div class="metric-label">shared SQLite brain</div></div>
+        <div class="metric"><div class="metric-val">$10–$15</div><div class="metric-label">estimated monthly cost</div></div>
+    </div>
+  </section>
+
+  <section class="detail-section reveal">
+    <p class="detail-section-label">05 — Links</p>
+    <div class="project-links">
+        <a class="project-cta" href="https://github.com/ulyssies/Nexus" target="_blank" rel="noopener noreferrer">View on GitHub <i data-lucide="arrow-up-right"></i></a>
+    </div>
+    <p class="detail-copy" style="margin-top:18px;font-size:13px;color:var(--text3);">Nexus is local-first by design — it runs on localhost against your own API keys and is never exposed publicly, so there is no live demo to link.</p>
+  </section>
+</main>
+
+<footer class="project-detail-footer">
+  <a class="project-back-link" href="../index.html#projects">← Back to projects</a>
+  <span class="footer-text">© 2026 Ulyssies Z. Adams</span>
+</footer>
+
+<script src="../js/constellation.js"></script>
+<script>
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+if (!html.dataset.theme) html.dataset.theme = 'dark';
+
+function updateThemeToggleLabel() {
+  const nextTheme = html.dataset.theme === 'light' ? 'dark' : 'light';
+  const label = `Switch to ${nextTheme} theme`;
+  toggle.setAttribute('aria-label', label);
+  toggle.setAttribute('title', label);
+}
+
+function setTheme(theme) {
+  html.dataset.theme = theme;
+  try {
+    localStorage.setItem('theme', theme);
+  } catch (error) {
+    // Theme persistence is optional when storage is blocked.
+  }
+  if (window.refreshNetworkPalette) window.refreshNetworkPalette();
+  updateThemeToggleLabel();
+}
+
+toggle.addEventListener('click', () => {
+  setTheme(html.dataset.theme === 'dark' ? 'light' : 'dark');
+});
+updateThemeToggleLabel();
+
+const readingProgressBar = document.getElementById('reading-progress');
+function updateReadingProgress() {
+  const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+  const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  const scrollPercent = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+  readingProgressBar.style.width = scrollPercent + '%';
+}
+window.addEventListener('scroll', updateReadingProgress);
+updateReadingProgress();
+
+const reveals = document.querySelectorAll('.reveal');
+function revealVisibleElements() {
+  reveals.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) {
+      el.classList.add('visible');
+    }
+  });
+}
+
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+    }
+  });
+}, { threshold: 0.1 });
+reveals.forEach(el => observer.observe(el));
+requestAnimationFrame(revealVisibleElements);
+window.addEventListener('load', revealVisibleElements);
+window.addEventListener('hashchange', () => requestAnimationFrame(revealVisibleElements));
+
+const nexusScreenshots = [
+  {
+    src: '../assets/images/nexus-home.png',
+    alt: 'Nexus Home command center',
+    title: 'Home — the command center',
+    description: "The first screen each day: an alert strip of only time-sensitive items, today's agenda with one-click goal check-ins, the morning-brief digest, a filterable agent feed, and an agent-health row — all from one /api/home call that aggregates across every agent.",
+  },
+  {
+    src: '../assets/images/nexus-job-board.png',
+    alt: 'Nexus job board scored listings',
+    title: 'Job board — the job agent',
+    description: 'Live listings from Adzuna, The Muse, and Jobicy, scored 0–100 against my résumés by Claude. Found-by-agent, live applications, and inactive subtabs, with filters and an inline panel explaining each fit. The email agent writes here too — a recruiter reply flips a row to interviewing.',
+  },
+  {
+    src: '../assets/images/nexus-graph.png',
+    alt: 'Nexus second-brain knowledge graph',
+    title: 'Second brain — the knowledge graph',
+    description: 'Every note, research node, and concept is a node; two notes that share a tag get an edge — a force-directed graph you can pan, zoom, and click. Only notes worth revisiting live here, with an optional concept hierarchy on top. This is the memory the council and brief read from.',
+  },
+  {
+    src: '../assets/images/nexus-research.png',
+    alt: 'Nexus research chat session',
+    title: 'Research — chat that becomes knowledge',
+    description: 'Open a session and really dig in — paste articles, fetch URLs, ask follow-ups. The conversation is ephemeral; saving it distills the whole thing into one structured node: summary, key concepts as tags, conclusions, tracked open questions, and sources.',
+  },
+  {
+    src: '../assets/images/nexus-journal.png',
+    alt: 'Nexus journal entry with auto-tags',
+    title: 'Journal — free writing, auto-organized',
+    description: 'Write a free-form entry and save. The tagging agent reads it and returns two to four topic tags, wiring the entry into the graph. You never file or categorize anything — the structure forms itself.',
+  },
+  {
+    src: '../assets/images/nexus-goals.png',
+    alt: 'Nexus goals with streaks and nudges',
+    title: 'Goals — what you are working toward',
+    description: "Goals with a daily or weekly cadence, each with a streak momentum bar, today's check-in controls, and the latest nudge from the accountability agent. Goal categories also feed the morning brief's interests.",
+  },
+  {
+    src: '../assets/images/nexus-calendar.png',
+    alt: 'Nexus calendar and email triage',
+    title: 'Calendar — email triage and deadlines',
+    description: 'The read-only email agent scans Gmail on a cron and on demand, surfacing upcoming events and deadlines it extracted from emails alongside a triaged inbox where each message gets an importance badge and a category. Scope stays gmail.readonly — Nexus never sends or deletes.',
+  },
+  {
+    src: '../assets/images/nexus-council.png',
+    alt: 'Nexus council of five personas',
+    title: 'Council of 5 — perspective on demand',
+    description: 'Ask about a decision or just rant. Five personas — Marcus, Lyra, Zeno, Aria, and Rex — answer in parallel, then each sees the others and declares a stance, and a Haiku call scores consensus 0–100. They read recent journal and goals, so advice is grounded in real life.',
+  },
+  {
+    src: '../assets/images/nexus-projects.png',
+    alt: 'Nexus projects archivist changelog',
+    title: 'Projects — the archivist',
+    description: "Per-repo cards with an AI-written changelog. The archivist polls git log and watches each repo's HEAD, summarizing each commit into summary, why, and impact. Filesystem reach is sandboxed to a configured project list.",
+  },
+  {
+    src: '../assets/images/nexus-settings.png',
+    alt: 'Nexus settings observability and cost',
+    title: 'Settings — observability and control',
+    description: "One panel to observe and steer unattended agents: per-agent run history, token-and-cost tracking per agent and per day, an error log, and direct controls — edit the job agent's locations, search terms, and résumés, and pick the morning brief's topics, all without touching a config file.",
+  },
+];
+
+(function () {
+  const carousel = document.querySelector('[data-screenshot-carousel]');
+  if (!carousel) return;
+
+  const image = carousel.querySelector('.screenshot-carousel-image');
+  const title = carousel.querySelector('.screenshot-carousel-title');
+  const count = carousel.querySelector('.screenshot-carousel-count');
+  const description = carousel.querySelector('.screenshot-carousel-description');
+  const dotsContainer = carousel.querySelector('.screenshot-carousel-dots');
+  const prevBtn = carousel.querySelector('.screenshot-carousel-prev');
+  const nextBtn = carousel.querySelector('.screenshot-carousel-next');
+  if (!image || !title || !count || !description || !dotsContainer || !prevBtn || !nextBtn) return;
+
+  let current = 0;
+
+  function renderScreenshot(index) {
+    current = (index + nexusScreenshots.length) % nexusScreenshots.length;
+    const screenshot = nexusScreenshots[current];
+    image.src = screenshot.src;
+    image.alt = screenshot.alt;
+    title.textContent = screenshot.title;
+    description.textContent = screenshot.description;
+    count.textContent = `${current + 1} / ${nexusScreenshots.length}`;
+    dotsContainer.querySelectorAll('.screenshot-carousel-dot').forEach((dot, dotIndex) => {
+      dot.classList.toggle('is-active', dotIndex === current);
+      dot.setAttribute('aria-current', dotIndex === current ? 'true' : 'false');
+    });
+  }
+
+  dotsContainer.innerHTML = nexusScreenshots.map((screenshot, index) =>
+    `<button class="screenshot-carousel-dot" type="button" data-index="${index}" aria-label="Show ${screenshot.title} screenshot"></button>`
+  ).join('');
+
+  dotsContainer.querySelectorAll('.screenshot-carousel-dot').forEach(dot => {
+    dot.addEventListener('click', () => renderScreenshot(Number(dot.dataset.index)));
+  });
+
+  prevBtn.addEventListener('click', () => renderScreenshot(current - 1));
+  nextBtn.addEventListener('click', () => renderScreenshot(current + 1));
+  renderScreenshot(0);
+})();
+
+if (window.lucide && typeof window.lucide.createIcons === 'function') {
+  window.lucide.createIcons();
+}
+</script>
+</body>
+</html>
