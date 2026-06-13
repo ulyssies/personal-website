@@ -211,26 +211,56 @@
   <p class="section-label reveal">01 — Work</p>
 
   <div class="project-showcase reveal">
-    <div class="project-grid">
+    <div class="project-carousel" data-project-carousel>
+      <button class="project-carousel-btn project-carousel-prev" type="button" aria-label="Previous projects"><i data-lucide="arrow-left"></i></button>
+      <div class="project-carousel-viewport">
+        <div class="project-carousel-track">
 
-          <!-- 001 AI News Podcast Generator -->
-            <a class="project-card project-select" href="projects/ai-podcast.html" aria-label="View AI News Podcast Generator project page">
+          <!-- 005 Nexus -->
+            <a class="project-card project-select" href="projects/nexus.html" aria-label="View Nexus project page">
               <div class="project-card-media">
-                <img src="assets/images/ai-podcast-thumbnail.png" alt="AI News Podcast Generator live briefing interface screenshot" loading="lazy">
+                <img src="assets/images/nexus-home.png" alt="Nexus command center dashboard screenshot" loading="lazy">
               </div>
               <div class="project-card-content">
-                <h3 class="project-title">AI News Podcast Generator</h3>
-                <p class="project-desc">Short, listenable news briefings generated from live articles, structured by Claude, and converted into audio with OpenAI text-to-speech.</p>
+                <h3 class="project-title">Nexus</h3>
+                <p class="project-desc">Local-first personal AI operating system: a fleet of specialized agents that share one SQLite brain, so each acts on what the others already know.</p>
                 <div class="project-tags">
-                  <span class="tag">Python</span>
-                  <span class="tag">FastAPI</span>
-                  <span class="tag">OpenAI TTS</span>
-                  <span class="tag">Next.js</span>
                   <span class="tag">React</span>
+                  <span class="tag">Node.js</span>
+                  <span class="tag">Express</span>
+                  <span class="tag">SQLite</span>
+                  <span class="tag">Claude AI</span>
+                  <span class="tag">node-cron</span>
                 </div>
                 <ul class="project-bullets">
-                  <li>Streams generation progress while the backend fetches sources, writes a script, and synthesizes audio.</li>
-                  <li>Built for unbiased commute briefings with transcripts and source links instead of another scroll feed.</li>
+                  <li>Nine agents read and write one shared database, so a recruiter email can move a job to "interviewing" on its own.</li>
+                  <li>Runs entirely on localhost with a command center, knowledge graph, council of five, and per-agent cost and run observability.</li>
+                </ul>
+                <span class="project-card-hint">
+                  View Details
+                  <i data-lucide="arrow-right"></i>
+                </span>
+              </div>
+            </a>
+
+          <!-- 002 Job Match Agent -->
+            <a class="project-card project-select" href="projects/job-agent.html" aria-label="View Job Match Agent project page">
+              <div class="project-card-media">
+                <img src="assets/images/job-agent-search-run-complete.png" alt="Job Match Agent search run dashboard screenshot" loading="lazy">
+              </div>
+              <div class="project-card-content">
+                <h3 class="project-title">Job Match Agent</h3>
+                <p class="project-desc">Autonomous local workspace that searches job boards, scores listings against my resume, tracks applications, and sends daily reports.</p>
+                <div class="project-tags">
+                  <span class="tag">Node.js</span>
+                  <span class="tag">Claude AI</span>
+                  <span class="tag">Adzuna API</span>
+                  <span class="tag">SQLite</span>
+                  <span class="tag">Nodemailer</span>
+                </div>
+                <ul class="project-bullets">
+                  <li>Scores roles 0-100%, estimates missing salaries, and deduplicates listings across daily runs.</li>
+                  <li>Ships a private local app, sanitized public dashboard, and automated email digest.</li>
                 </ul>
                 <span class="project-card-hint">
                   View Details
@@ -266,24 +296,24 @@
               </div>
             </a>
 
-          <!-- 002 Job Match Agent -->
-            <a class="project-card project-select" href="projects/job-agent.html" aria-label="View Job Match Agent project page">
+          <!-- 001 AI News Podcast Generator -->
+            <a class="project-card project-select" href="projects/ai-podcast.html" aria-label="View AI News Podcast Generator project page">
               <div class="project-card-media">
-                <img src="assets/images/job-agent-search-run-complete.png" alt="Job Match Agent search run dashboard screenshot" loading="lazy">
+                <img src="assets/images/ai-podcast-thumbnail.png" alt="AI News Podcast Generator live briefing interface screenshot" loading="lazy">
               </div>
               <div class="project-card-content">
-                <h3 class="project-title">Job Match Agent</h3>
-                <p class="project-desc">Autonomous local workspace that searches job boards, scores listings against my resume, tracks applications, and sends daily reports.</p>
+                <h3 class="project-title">AI News Podcast Generator</h3>
+                <p class="project-desc">Short, listenable news briefings generated from live articles, structured by Claude, and converted into audio with OpenAI text-to-speech.</p>
                 <div class="project-tags">
-                  <span class="tag">Node.js</span>
-                  <span class="tag">Claude AI</span>
-                  <span class="tag">Adzuna API</span>
-                  <span class="tag">SQLite</span>
-                  <span class="tag">Nodemailer</span>
+                  <span class="tag">Python</span>
+                  <span class="tag">FastAPI</span>
+                  <span class="tag">OpenAI TTS</span>
+                  <span class="tag">Next.js</span>
+                  <span class="tag">React</span>
                 </div>
                 <ul class="project-bullets">
-                  <li>Scores roles 0-100%, estimates missing salaries, and deduplicates listings across daily runs.</li>
-                  <li>Ships a private local app, sanitized public dashboard, and automated email digest.</li>
+                  <li>Streams generation progress while the backend fetches sources, writes a script, and synthesizes audio.</li>
+                  <li>Built for unbiased commute briefings with transcripts and source links instead of another scroll feed.</li>
                 </ul>
                 <span class="project-card-hint">
                   View Details
@@ -319,6 +349,10 @@
                 </span>
               </div>
             </a>
+        </div>
+      </div>
+      <button class="project-carousel-btn project-carousel-next" type="button" aria-label="Next projects"><i data-lucide="arrow-right"></i></button>
+      <div class="project-carousel-dots" aria-label="Project navigation"></div>
     </div>
   </div>
 
@@ -539,6 +573,65 @@ window.addEventListener('hashchange', () => requestAnimationFrame(() => {
   syncHashSection();
   window.setTimeout(syncHashSection, 80);
 }));
+
+// ── PROJECT CAROUSEL ──────────────────────────────────────
+(function () {
+  const carousel = document.querySelector('[data-project-carousel]');
+  if (!carousel) return;
+
+  const viewport = carousel.querySelector('.project-carousel-viewport');
+  const track = carousel.querySelector('.project-carousel-track');
+  const cards = Array.from(track ? track.querySelectorAll('.project-card') : []);
+  const prevBtn = carousel.querySelector('.project-carousel-prev');
+  const nextBtn = carousel.querySelector('.project-carousel-next');
+  const dotsContainer = carousel.querySelector('.project-carousel-dots');
+  if (!viewport || !track || !cards.length || !prevBtn || !nextBtn || !dotsContainer) return;
+
+  // One scroll "step" is the distance between adjacent card starts (width + gap).
+  const step = () => (cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : cards[0].offsetWidth);
+
+  dotsContainer.innerHTML = cards.map((card, i) => {
+    const title = card.querySelector('.project-title');
+    const label = title ? title.textContent.trim() : `project ${i + 1}`;
+    return `<button class="project-carousel-dot" type="button" data-index="${i}" aria-label="Show ${label}"></button>`;
+  }).join('');
+  const dots = Array.from(dotsContainer.querySelectorAll('.project-carousel-dot'));
+
+  function activeIndex() {
+    const s = step();
+    if (!s) return 0;
+    return Math.max(0, Math.min(cards.length - 1, Math.round(viewport.scrollLeft / s)));
+  }
+
+  function sync() {
+    const i = activeIndex();
+    dots.forEach((dot, di) => {
+      const on = di === i;
+      dot.classList.toggle('is-active', on);
+      dot.setAttribute('aria-current', on ? 'true' : 'false');
+    });
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    prevBtn.disabled = viewport.scrollLeft <= 1;
+    nextBtn.disabled = viewport.scrollLeft >= maxScroll - 1;
+  }
+
+  function scrollToIndex(i) {
+    const clamped = Math.max(0, Math.min(cards.length - 1, i));
+    viewport.scrollTo({ left: clamped * step(), behavior: 'smooth' });
+  }
+
+  prevBtn.addEventListener('click', () => scrollToIndex(activeIndex() - 1));
+  nextBtn.addEventListener('click', () => scrollToIndex(activeIndex() + 1));
+  dots.forEach(dot => dot.addEventListener('click', () => scrollToIndex(Number(dot.dataset.index))));
+
+  let scrollRaf = 0;
+  viewport.addEventListener('scroll', () => {
+    if (scrollRaf) return;
+    scrollRaf = requestAnimationFrame(() => { scrollRaf = 0; sync(); });
+  });
+  window.addEventListener('resize', sync);
+  sync();
+})();
 </script>
 <script>
   if (window.lucide && typeof window.lucide.createIcons === 'function') {
